@@ -1,4 +1,5 @@
 const Employee = require('../models/Employee');
+const bcrypt = require('bcryptjs');
 
 const createEmployee = async (req, res) => {
 
@@ -9,12 +10,19 @@ const createEmployee = async (req, res) => {
 
 		if (!employee) {
 			employee = new Employee(req.body);
+
+			//Encriptar la contraseña
+			const salt = bcrypt.genSaltSync(10);
+			employee.password = bcrypt.hashSync(password, salt);
+
 			await employee.save();
 
 			res.status(201).json({
 				"ok": true,
 				"message": "New user created",
-				employee
+				uid: employee.id,
+				name: employee.name,
+				username: employee.username
 			});
 		} else {
 			res.status(400).json({
