@@ -15,7 +15,7 @@ router.post(
     '/new', 
     [
         check('name', 'The name is required').not().isEmpty(),
-        check('email', 'The email is required').isEmail(),
+        check('username', 'The username is required').not().isEmpty(),
         check('password', 'The password is required').not().isEmpty(),
         check('password', 'The password must be at least 6 characters').isLength({ min: 6 }),
         validateFields
@@ -25,7 +25,7 @@ router.post(
 router.post(
     '/',
     [
-        check('email', 'The email is required').isEmail(),
+        check('username', 'The username is required').not().isEmpty(),
         check('password', 'The password is required').not().isEmpty(),
         validateFields
     ],
