@@ -1,5 +1,6 @@
 const Employee = require('../models/Employee');
 const bcrypt = require('bcryptjs');
+const {generateJWT} = require('../helpers/jwt');
 
 const createEmployee = async (req, res) => {
 
@@ -39,16 +40,49 @@ const createEmployee = async (req, res) => {
 	}
 }
 
-const loginEmployee = (req, res) => {
+const loginEmployee = async (req, res) => {
+	const {username, password} = req.body;
 
-	const {email, password} = req.body;
+	try {
+		let employee = await Employee.findOne({username});
 
-	res.json({
-		"ok": true,
-		"message": "Login",
-		email,
-		password
-	});
+		if (!employee) {
+			res.status(400).json({
+				"ok": false,
+				"message": "User doesn't exist"
+			});
+
+		} else {
+
+			//Validar la contraseña
+			const validPassword = bcrypt.compareSync(password, employee.password);
+
+			if (!validPassword) {
+				return res.status(400).json({
+					"ok": false,
+					"message": "Password is incorrect"
+				});
+			}		
+
+			//Generar JWT
+			const token = await generateJWT(employee.id, employee.name);
+
+			//Respuesta al usuario
+			res.json({
+				"ok": true,
+				uid: employee.id,
+				name: employee.name,
+				token
+			});
+
+		}
+	} catch (error) {
+		res.status(500).json({
+			"ok": false,
+			"message": "Error logging user",
+			error
+		});
+	}
 }
 
 const renewToken = (req, res) => {
