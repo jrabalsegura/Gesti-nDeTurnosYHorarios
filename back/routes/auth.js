@@ -6,11 +6,16 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({
-        "ok": true
-    });
-});
+const { createEmployee, loginEmployee, renewToken } = require('../controllers/auth');
+
+
+router.post('/new', createEmployee);
+
+router.post('/', loginEmployee);
+
+router.get('/renew', renewToken);
+
+
 
 
 module.exports = router;
