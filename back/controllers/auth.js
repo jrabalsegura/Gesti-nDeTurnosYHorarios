@@ -1,16 +1,27 @@
 
 
 const createEmployee = (req, res) => {
-  res.json({
+
+  const {name, email, password} = req.body;
+
+  res.status(201).json({
       "ok": true,
-      "message": "New user created"
+      "message": "New user created",
+      name,
+      email,
+      password
   });
 }
 
 const loginEmployee = (req, res) => {
+
+  const {email, password} = req.body;
+
   res.json({
       "ok": true,
-      "message": "Login"
+      "message": "Login",
+      email,
+      password
   });
 }
 
