@@ -85,10 +85,18 @@ const loginEmployee = async (req, res) => {
 	}
 }
 
-const renewToken = (req, res) => {
+const renewToken = async(req, res) => {
+
+	const {uid, name} = req;
+
+	//Generar un nuevo JWT
+	const token = await generateJWT(uid, name);
+
 	res.json({
 		"ok": true,
-		"message": "Token renewed"
+		uid,
+		name,
+		token
 	});
 }
 
