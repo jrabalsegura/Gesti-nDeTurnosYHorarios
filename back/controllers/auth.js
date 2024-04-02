@@ -2,7 +2,7 @@ const Employee = require('../models/Employee');
 const bcrypt = require('bcryptjs');
 const {generateJWT} = require('../helpers/jwt');
 
-const createEmployee = async (req, res) => {
+const createAdmin = async (req, res) => {
 
 	const {username, password} = req.body;
 
@@ -22,7 +22,7 @@ const createEmployee = async (req, res) => {
 				"ok": true,
 				"message": "New user created",
 				uid: employee.id,
-				name: employee.name,
+				name: "admin",
 				username: employee.username
 			});
 		} else {
@@ -101,7 +101,7 @@ const renewToken = async(req, res) => {
 }
 
 module.exports = {
-    createEmployee,
+    createAdmin,
     loginEmployee,
     renewToken
 }
