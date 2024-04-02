@@ -21,6 +21,7 @@ app.use(express.json());
 app.use('/auth', require('./routes/auth'));
 app.use('/shifts', require('./routes/shifts'));
 app.use('/eventosTrabajo', require('./routes/eventosTrabajo'));
+app.use('/registrosTrabajo', require('./routes/registrosTrabajo'));
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
