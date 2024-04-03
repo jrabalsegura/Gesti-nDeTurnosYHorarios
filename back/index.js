@@ -24,6 +24,7 @@ app.use('/shifts', require('./routes/shifts'));
 app.use('/eventosTrabajo', require('./routes/eventosTrabajo'));
 app.use('/registrosTrabajo', require('./routes/registrosTrabajo'));
 app.use('/notificaciones', require('./routes/notifications'));
+app.use('/ausencias', require('./routes/ausencias'));
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
