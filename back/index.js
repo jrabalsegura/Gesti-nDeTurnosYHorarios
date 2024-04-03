@@ -27,6 +27,7 @@ app.use('/notificaciones', require('./routes/notifications'));
 app.use('/ausencias', require('./routes/ausencias'));
 app.use('/holidays', require('./routes/holidays'));
 app.use('/nominas', require('./routes/nominas'));
+app.use('/employees', require('./routes/employees'));
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
