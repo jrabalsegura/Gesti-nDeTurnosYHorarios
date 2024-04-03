@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const { dbConnection } = require('./database/config');
 const cors = require('cors');
+const { createUser } = require('./helpers/createUser');
 
 const app = express();
 
@@ -22,9 +23,13 @@ app.use('/auth', require('./routes/auth'));
 app.use('/shifts', require('./routes/shifts'));
 app.use('/eventosTrabajo', require('./routes/eventosTrabajo'));
 app.use('/registrosTrabajo', require('./routes/registrosTrabajo'));
+app.use('/notificaciones', require('./routes/notifications'));
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
+
+    //Create initial admin user
+    createUser();
 });
 
 

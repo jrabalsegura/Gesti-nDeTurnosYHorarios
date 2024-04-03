@@ -15,7 +15,7 @@ const createEvent = async (req, res) => {
         //Here, when event type = 'checkOut' we create a new registrosTrabajo'
         // calling the controller directly
 
-        res.json({ evento });
+        res.status(201).json({ evento });
 
     } catch (error) {
         res.status(500).json({ "ok": false, msg: 'Error creating event' });
