@@ -3,6 +3,7 @@ require('dotenv').config();
 const { dbConnection } = require('./database/config');
 const cors = require('cors');
 const { createUser } = require('./helpers/createUser');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(express.static('public'));
 // Lectura y parsing the body
 app.use(express.json());
 
+app.use(fileUpload());
+
 // Rutas
 app.use('/auth', require('./routes/auth'));
 app.use('/shifts', require('./routes/shifts'));
@@ -28,6 +31,7 @@ app.use('/ausencias', require('./routes/ausencias'));
 app.use('/holidays', require('./routes/holidays'));
 app.use('/nominas', require('./routes/nominas'));
 app.use('/employees', require('./routes/employees'));
+app.use('/upload', require('./routes/upload'));
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
