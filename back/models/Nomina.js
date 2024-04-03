@@ -12,7 +12,8 @@ const NominaSchema = Schema({
     },
     file: {
         //Ruta del archivo
-        type: String
+        type: String,
+        required: true
     }
 });
 
