@@ -5,6 +5,7 @@ const { validateFields } = require('../middlewares/validate-fields');
 const {validateJWT} = require('../middlewares/validate-JWT');
 const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
+const { isNotAdmin } = require('../helpers/isNotAdmin');
 
 const {
     getEmployees,
@@ -45,6 +46,7 @@ router.put(
     '/:id', 
     [
         check('name', 'The name is required').not().isEmpty(),
+        check('name', 'The name is not admin').custom(isNotAdmin),
         check('username', 'The username is required').not().isEmpty(),
         check('password', 'The password is required').not().isEmpty(),
         check('startDate', 'The start date is a date').optional().custom(isDate),

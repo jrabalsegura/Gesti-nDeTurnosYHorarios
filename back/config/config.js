@@ -12,8 +12,8 @@ const shifts = {
 }
 
 const notifications = {
-    holidays,
-    ausencia
+    holiday: 'holidays',
+    ausencia: 'ausencia'
 }
 
 const legislacion = {
@@ -32,8 +32,15 @@ const legislacion = {
     cotizacionSeguridadSocialTrabajador: 6.4
 }
 
+const workEvents = {
+    checkin: 'checkin',
+    checkout: 'checkout'
+}
+
 module.exports = {
     shifts,
     notifications,
-    legislacion
+    legislacion,
+    workEvents
 }
+

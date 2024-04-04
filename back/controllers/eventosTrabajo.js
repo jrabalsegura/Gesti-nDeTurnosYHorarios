@@ -1,7 +1,7 @@
 const EventoTrabajo = require('../models/EventoTrabajo');
 const RegistroTrabajo = require('../models/RegistroTrabajo');
 const { getLastEventByEmployeeId } = require('../helpers/getLastEventByEmployeeId');
-
+const { workEvents } = require('../config/config');
 const getEvents = async (req, res) => {
     const eventos = await EventoTrabajo.find();
     res.status(200).json({ eventos });
@@ -24,7 +24,7 @@ const createEvent = async (req, res) => {
 
             console.log(prevEvent);
             //Check if previous event is a checkin
-            if (prevEvent.type === 'checkIn') {
+            if (prevEvent.type === workEvents.checkin) {
 
                 //Calc hours prom prev event to actual
                 const hours = (date - prevEvent.date) / (1000 * 60 * 60);

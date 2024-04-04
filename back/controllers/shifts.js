@@ -1,7 +1,10 @@
 const Shift = require('../models/Shift');
 
 const getShifts = async (req, res) => {
-    const shifts = await Shift.find().populate('employeeId');
+    const {id} = req.params;
+
+    
+    const shifts = await Shift.find({employeeId: id}).populate('employeeId');
     res.status(200).json({shifts});
 }
 
