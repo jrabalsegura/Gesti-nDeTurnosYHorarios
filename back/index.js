@@ -37,7 +37,7 @@ app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 
     //Create initial admin user
-    createUser();
+    createUser({name: "admin", username: "admin@admin.com", password: "12345678"});
 });
 
 

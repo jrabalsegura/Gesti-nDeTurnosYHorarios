@@ -1,3 +1,4 @@
+const { createUser } = require('../helpers/createUser');
 const Employee = require('../models/Employee');
 
 const getEmployees = async (req, res) => {
@@ -15,11 +16,11 @@ const createEmployee = async (req, res) => {
     const {name, username, password, startDate, hourlySallary} = req.body;
 
     try {
-        const employee = new Employee({name, username, password, startDate, hourlySallary});
-        await employee.save();
+        const employee = await createUser({name, username, password, startDate, hourlySallary});
+
         res.status(201).json({ok: true, employee});
     } catch (error) {
-        res.status(500).json({ok: false, msg: 'Error creating employee'});
+        res.status(500).json({ok: false, error, msg: 'Error creating employee'});
     }
 }
 

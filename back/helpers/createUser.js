@@ -1,21 +1,31 @@
 const Employee = require("../models/Employee")
+const bcrypt = require('bcryptjs');
 
 //Create employee user
-const createUser = async () => {
+const createUser = async (body) => {
 
     try {
         // Check if admin user exists before creating it
-        const adminExists = await Employee.findOne({ username: 'admin@admin.com' });
-        if (adminExists) {
-            console.log('Admin user already exists');
+        const userExists = await Employee.findOne({ username: body.username });
+        if (userExists) {
+            console.log('User already exists');
             return;
         }
+        console.log(body);
+        //Encriptar la contraseña
+        const salt = bcrypt.genSaltSync(10);
 
-        const admin = new Employee({ name: 'admin', username: 'admin@admin.com', password: '12345678'});
-        await admin.save();
-        console.log('Admin user created successfully');
+        const employee = new Employee(body);
+        employee.password = bcrypt.hashSync(body.password, salt);
+
+        await employee.save();
+
+        console.log('User created successfully');
+        
+        return employee;
+
     } catch (error) {
-        console.log('Error creating admin user');
+        console.log(error, 'Error creating user'); 
     }
     
 }

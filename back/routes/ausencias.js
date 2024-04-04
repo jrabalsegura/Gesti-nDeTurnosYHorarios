@@ -3,15 +3,17 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-JWT');
+const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 
 const {getAusencias, getAusencia, createAusencia} = require('../controllers/ausencias');
 
 router.use(validateJWT);
 
-router.get('/all/:employeeId', getAusencias);
 
-router.get('/:id', getAusencia);
+router.get('/all/:employeeId', validateAdmin, getAusencias);
+
+router.get('/:id', validateAdmin, getAusencia);
 
 router.post(
     '/new', 

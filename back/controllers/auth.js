@@ -1,30 +1,28 @@
 const Employee = require('../models/Employee');
 const bcrypt = require('bcryptjs');
 const {generateJWT} = require('../helpers/jwt');
+const { createUser } = require('../helpers/createUser');
 
 const createAdmin = async (req, res) => {
 
-	const {username, password} = req.body;
+	const {name, username, password} = req.body;
 
 	try {
 		let employee = await Employee.findOne({username});
 
 		if (!employee) {
-			employee = new Employee(req.body);
+			//employee = new Employee(req.body);
 
-			//Encriptar la contraseña
-			const salt = bcrypt.genSaltSync(10);
-			employee.password = bcrypt.hashSync(password, salt);
-
-			await employee.save();
+			employee = await createUser(req.body);
 
 			res.status(201).json({
 				"ok": true,
 				"message": "New user created",
 				uid: employee.id,
-				name: "admin",
+				name: employee.name,
 				username: employee.username
 			});
+
 		} else {
 			res.status(400).json({
 				"ok": false,
