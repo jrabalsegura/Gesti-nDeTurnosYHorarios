@@ -17,7 +17,7 @@ const createEvent = async (req, res) => {
         console.log(evento);
 
         //Here, when event type = 'checkOut' we create a new registrosTrabajo'
-        if (type === 'checkOut') {
+        if (type === workEvents.checkout) {
             console.log('here');
             
             const prevEvent = await getLastEventByEmployeeId(employeeId);
@@ -30,6 +30,7 @@ const createEvent = async (req, res) => {
                 const hours = (date - prevEvent.date) / (1000 * 60 * 60);
 
                 //If hours > 24, then there is an error
+                console.log(hours);
                 if (hours > 24) {
                     return res.status(400).json({ "ok": false, msg: 'There is no checkin in the previous 24 hours' });
                 }
