@@ -3,7 +3,7 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { validateFields } = require('../middlewares/validate-fields');
 const {validateJWT} = require('../middlewares/validate-JWT');
-
+const { validateAdmin } = require('../middlewares/validate-admin');
 const { getShifts, addShift, updateShift, deleteShift } = require('../controllers/shifts');
 const { isDate } = require('../helpers/isDate');
 
@@ -22,7 +22,8 @@ router.post(
         check('employeeId', 'El id del empleado es obligatorio').not().isEmpty(),
         check('start', 'La fecha de inicio es obligatoria').custom(isDate),
         check('end', 'La fecha de fin es obligatoria').custom(isDate),
-        validateFields
+        validateFields,
+        validateAdmin
     ],
     addShift);
 
@@ -34,12 +35,13 @@ router.put(
         check('employeeId', 'El id del empleado es obligatorio').not().isEmpty(),
         check('start', 'La fecha de inicio es obligatoria').custom(isDate),
         check('end', 'La fecha de fin es obligatoria').custom(isDate),
-        validateFields
+        validateFields,
+        validateAdmin
     ],
     updateShift);
 
 // Delete shift
-router.delete('/:id', deleteShift);
+router.delete('/:id', validateAdmin, deleteShift);
 
 module.exports = router;
 

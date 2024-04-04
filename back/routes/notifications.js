@@ -3,13 +3,13 @@ const router = express.Router();
 const {check} = require('express-validator');
 const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-JWT');
-
+const { validateAdmin } = require('../middlewares/validate-admin');
 const {isDate} = require('../helpers/isDate');
 const {getNotifications, createNotification, deleteNotification} = require('../controllers/notifications');
 
 router.use(validateJWT);
 
-router.get('/', getNotifications);
+router.get('/', validateAdmin, getNotifications);
 
 router.post(
     '/new', 
@@ -22,7 +22,7 @@ router.post(
     ], 
     createNotification);
 
-router.delete('/:id', deleteNotification);
+router.delete('/:id', validateAdmin, deleteNotification);
 
 module.exports = router;
 

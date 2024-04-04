@@ -3,6 +3,7 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { validateFields } = require('../middlewares/validate-fields');
 const {validateJWT} = require('../middlewares/validate-JWT');
+const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 
 const {
@@ -22,6 +23,7 @@ const {
 } = require('../controllers/employees');
 
 router.use(validateJWT);
+router.use(validateAdmin);
 
 router.get('/', getEmployees);
 

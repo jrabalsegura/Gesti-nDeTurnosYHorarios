@@ -3,12 +3,13 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-JWT');
+const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 const { getHours, createRegistry } = require('../controllers/registrosTrabajo');
 
 router.use(validateJWT);
 
-router.get('/:id&:from&:to', getHours);
+router.get('/:id&:from&:to', validateAdmin, getHours);
 
 router.post('/new',
     [
