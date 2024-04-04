@@ -29,6 +29,11 @@ const createEvent = async (req, res) => {
                 //Calc hours prom prev event to actual
                 const hours = (date - prevEvent.date) / (1000 * 60 * 60);
 
+                //If hours > 24, then there is an error
+                if (hours > 24) {
+                    return res.status(400).json({ "ok": false, msg: 'There is no checkin in the previous 24 hours' });
+                }
+
                 //Create a new registro
                 const registro = new RegistroTrabajo({ employeeId, date, hours });
                 await registro.save();

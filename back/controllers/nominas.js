@@ -3,7 +3,7 @@ const Nomina = require('../models/Nomina');
 const getNominas = async (req, res) => {
 
     //Find all then nominas by employeeId
-    const {id} = req.params;
+    const id = req.uid;
 
     try {
         const nominas = await Nomina.find({employeeId: id});

@@ -10,7 +10,7 @@ const {getNominas, createNomina} = require('../controllers/nominas');
 
 router.use(validateJWT);
 
-router.get('/:id', getNominas);
+router.get('/', getNominas);
 
 router.post('/new', [
     check('employeeId', 'The employeeId is required').isMongoId(),
