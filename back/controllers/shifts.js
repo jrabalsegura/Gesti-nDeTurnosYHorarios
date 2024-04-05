@@ -8,6 +8,13 @@ const getShifts = async (req, res) => {
     res.status(200).json({shifts});
 }
 
+const getJustStartedShifts = async (req, res) => {
+    const shifts = await Shift.find({
+        start: { $gte: new Date(new Date().getTime() - 30 * 60 * 1000) }
+    });
+    res.status(200).json({shifts});
+}
+
 const addShift = async (req, res) => {
     const {type, start, end, employeeId} = req.body;
 
@@ -86,6 +93,7 @@ module.exports = {
     getShifts,
     addShift,
     updateShift,
-    deleteShift
+    deleteShift,
+    getJustStartedShifts
 }
 
