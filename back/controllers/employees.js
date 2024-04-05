@@ -195,6 +195,24 @@ const getStartDate = async (req, res) => {
     }   
 }
 
+const clearHoursAndHolidays = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const employee = await Employee.findById(id);
+        if (!employee) {
+            return res.status(404).json({ok: false, msg: 'Employee not found'});
+        }
+
+        employee.extraHours = 0;
+        employee.holidays = 0;
+        await employee.save();
+        res.status(200).json({ok: true, employee});
+    } catch (error) {
+        res.status(500).json({ok: false, msg: 'Error clearing hours and holidays'});
+    }
+}
+
 module.exports = {
     getEmployees,
     createEmployee,
@@ -208,5 +226,6 @@ module.exports = {
     addHolidays,
     getOnHolidays,
     changeOnHolidays,
-    getStartDate
+    getStartDate,
+    clearHoursAndHolidays
 }

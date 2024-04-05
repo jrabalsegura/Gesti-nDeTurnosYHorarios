@@ -1,10 +1,15 @@
 const Shift = require('../models/Shift');
 
+const getALLShifts = async (req, res) => {
+    const shifts = await Shift.find();
+    res.status(200).json({shifts});
+}
+
 const getShifts = async (req, res) => {
     const {id} = req.params;
 
     
-    const shifts = await Shift.find({employeeId: id}).populate('employeeId');
+    const shifts = await Shift.find({employeeId: id});
     res.status(200).json({shifts});
 }
 
@@ -94,6 +99,7 @@ module.exports = {
     addShift,
     updateShift,
     deleteShift,
-    getJustStartedShifts
+    getJustStartedShifts,
+    getALLShifts
 }
 

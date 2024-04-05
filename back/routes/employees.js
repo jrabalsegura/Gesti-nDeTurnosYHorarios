@@ -7,6 +7,7 @@ const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 const { isNotAdmin } = require('../helpers/isNotAdmin');
 
+
 const {
     getEmployees,
     createEmployee,
@@ -20,7 +21,8 @@ const {
     addHolidays,
     getOnHolidays,
     changeOnHolidays,
-    getStartDate
+    getStartDate,
+    clearHoursAndHolidays
 } = require('../controllers/employees');
 
 router.use(validateJWT);
@@ -83,6 +85,8 @@ router.get('/:id/libre', getOnHolidays);
 router.post('/:id/libre', changeOnHolidays);
 
 router.get('/:id/startDate', getStartDate);
+
+router.post('/:id/clear', clearHoursAndHolidays);
 
 module.exports = router;
 

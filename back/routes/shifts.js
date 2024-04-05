@@ -8,14 +8,15 @@ const { validateAdmin } = require('../middlewares/validate-admin');
 const { getShifts, addShift, updateShift, deleteShift } = require('../controllers/shifts');
 const { isDate } = require('../helpers/isDate');
 const { isShift } = require('../helpers/isShift');
-const { getJustStartedShifts } = require('../controllers/shifts');
+const { getJustStartedShifts, getALLShifts } = require('../controllers/shifts');
+
 
 router.use(validateJWT);
 
+router.get('/', getALLShifts);
 
 router.get('/justStarted', getJustStartedShifts);
-// Get turns, primero todos
-// TODO: Filtrar por usuario
+
 router.get('/:id', getShifts);
 
 // Create new shift
