@@ -1,4 +1,4 @@
-const cron = require('node-cron');
+const { Cron } = require('croner');
 const {checkHolidays} = require('./checkHolidays');
 const {checkAsistencia} = require('./checkAsistencia');
 const {deletePastShifts} = require('./deletePastShifts');
@@ -7,7 +7,7 @@ const {clearHoursAndHolidays} = require('./clearHoursAndHolidays');
 const {checkMandatoryRest} = require('./checkMandatoryRest');
 
 //Check holidays every day at 07:00, check if one start or end today
-cron.schedule('0 7 * * *', () => checkHolidays);
+Cron('0 7 * * *', () => checkHolidays, {timeZone: 'Europe/Madrid'});
 
 // Run after the first hour every shift, get the shifts programmatically:
 const startShifts = Object.values(shifts).map(shift => shift.start);
@@ -15,17 +15,17 @@ const startShiftsNumbers = startShifts.map(shift => shift.split(':')[0]);
 
 startShiftsNumbers.forEach(shiftStartHour => {
     // Schedule a job for 30 minutes after the start of each shift
-    cron.schedule(`30 ${shiftStartHour} * * *`, () => checkAsistencia);
+    Cron(`30 ${shiftStartHour} * * *`, () => checkAsistencia, {timeZone: 'Europe/Madrid'});
   }
 );
 
 // Run once a day at 07:00 ahd deletePastShifts
-cron.schedule('0 7 * * *', () => deletePastShifts);
+Cron('0 7 * * *', () => deletePastShifts, {timeZone: 'Europe/Madrid'});
 
 // Run once a year, the 1st of january at 07:00
-cron.schedule('0 7 1 1 *', () => clearHoursAndHolidays);
+Cron('0 7 1 1 *', () => clearHoursAndHolidays, {timeZone: 'Europe/Madrid'});
 
 // Run once a week, Monday at 07:00
-cron.schedule('0 7 * * 1', () => checkMandatoryRest);
+Cron('0 7 * * 1', () => checkMandatoryRest, {timeZone: 'Europe/Madrid'});
 
 
