@@ -39,7 +39,8 @@ router.put(
         check('start', 'La fecha de inicio es obligatoria').custom(isDate),
         check('end', 'La fecha de fin es obligatoria').custom(isDate),
         validateFields,
-        validateAdmin
+        validateAdmin,
+        validateShift
     ],
     updateShift);
 

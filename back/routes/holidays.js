@@ -6,12 +6,13 @@ const { validateJWT } = require('../middlewares/validate-JWT');
 const { isDate } = require('../helpers/isDate');
 
 const {getHolidaysStartToday, getHolidaysEndToday, createHoliday} = require('../controllers/holidays');
+const { validateAdmin } = require('../middlewares/validate-admin');
 
 router.use(validateJWT);
 
-router.get('/start', getHolidaysStartToday);
+router.get('/start', validateAdmin, getHolidaysStartToday);
 
-router.get('/end', getHolidaysEndToday);
+router.get('/end', validateAdmin, getHolidaysEndToday);
 
 router.post('/new', [
     check('startDate', 'The startDate is required').custom(isDate),

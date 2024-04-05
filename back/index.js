@@ -4,6 +4,7 @@ const { dbConnection } = require('./database/config');
 const cors = require('cors');
 const { createUser } = require('./helpers/createUser');
 const fileUpload = require('express-fileupload');
+const cron = require('./cronjobs/cronjobs');
 
 const app = express();
 
