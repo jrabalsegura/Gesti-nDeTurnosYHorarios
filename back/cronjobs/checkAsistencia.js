@@ -1,5 +1,6 @@
 const api = require('../api/api');
 const {  workEvents } = require('../config/config');
+const { sendMail } = require('../helpers/sendMail');
 
 const checkAsistencia = async () => {
     console.log('Checking asistencia');
@@ -19,7 +20,7 @@ const checkAsistencia = async () => {
     //Loop all the employeeids and check if present in checkInsIds
     employeeIds.forEach(employeeId => {
         if (!checkInsIds.includes(employeeId)) {
-            //TODO: Notify by mail
+            sendMail('Falta de asistencia', `El empleado ${employeeId} no ha realizado el checkin después de la primera hora del turno`);
             console.log(`The employee ${employeeId} has not check in after the first hour of the shift`);
         }
     });

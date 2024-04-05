@@ -1,4 +1,5 @@
 const api = require('../api/api');
+const { sendMail } = require('../helpers/sendMail');
 const RegistroTrabajo = require('../models/RegistroTrabajo'); // Import the model
 const mandatoryRest = require('../config/config').legislacion.minHorasDescansoIninterrumpido;
 const workEvents = require('../config/config').workEvents;
@@ -27,6 +28,7 @@ const checkMandatoryRest = async () => {
 
         if (!hasLongEnoughRest) {
             //TODO: Notify by mail
+            sendMail('Falta de descanso obligatorio', `El empleado ${employee._id} no ha realizado un descanso obligatorio durante la semana.`);
             console.log(`Employee ID ${employee._id} did not have a rest period longer than ${mandatoryRest} hours in the past week.`);
         }
     }
