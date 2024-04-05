@@ -4,6 +4,7 @@ const {checkAsistencia} = require('./checkAsistencia');
 const {deletePastShifts} = require('./deletePastShifts');
 const {shifts} = require('../config/config');
 const {clearHoursAndHolidays} = require('./clearHoursAndHolidays');
+const {checkMandatoryRest} = require('./checkMandatoryRest');
 
 //Check holidays every day at 07:00, check if one start or end today
 cron.schedule('0 7 * * *', () => checkHolidays);
@@ -23,5 +24,8 @@ cron.schedule('0 7 * * *', () => deletePastShifts);
 
 // Run once a year, the 1st of january at 07:00
 cron.schedule('0 7 1 1 *', () => clearHoursAndHolidays);
+
+// Run once a week, Monday at 07:00
+cron.schedule('0 7 * * 1', () => checkMandatoryRest);
 
 
