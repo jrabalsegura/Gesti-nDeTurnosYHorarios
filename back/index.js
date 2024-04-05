@@ -22,6 +22,7 @@ app.use(express.json());
 
 app.use(fileUpload());
 
+
 // Rutas
 app.use('/auth', require('./routes/auth'));
 app.use('/shifts', require('./routes/shifts'));

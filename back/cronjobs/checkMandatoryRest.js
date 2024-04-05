@@ -26,6 +26,7 @@ const checkMandatoryRest = async () => {
         }
 
         if (!hasLongEnoughRest) {
+            //TODO: Notify by mail
             console.log(`Employee ID ${employee._id} did not have a rest period longer than ${mandatoryRest} hours in the past week.`);
         }
     }
