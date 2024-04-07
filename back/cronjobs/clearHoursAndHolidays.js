@@ -1,4 +1,4 @@
-const api = require('../api/api');
+const {api} = require('../api/api');
 
 const clearHoursAndHolidays = async () => {
     console.log('Clearing hours and holidays');

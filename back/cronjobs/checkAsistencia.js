@@ -1,4 +1,4 @@
-const api = require('../api/api');
+const {api} = require('../api/api');
 const {  workEvents } = require('../config/config');
 const { sendMail } = require('../helpers/sendMail');
 

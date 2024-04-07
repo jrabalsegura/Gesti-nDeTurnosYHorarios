@@ -7,7 +7,7 @@ const {clearHoursAndHolidays} = require('./clearHoursAndHolidays');
 const {checkMandatoryRest} = require('./checkMandatoryRest');
 
 //Check holidays every day at 07:00, check if one start or end today
-Cron('0 7 * * *', () => checkHolidays);
+Cron('0 7 * * *', () => checkHolidays());
 
 // Run after the first hour every shift, get the shifts programmatically:
 const startShifts = Object.values(shifts).map(shift => shift.start);
@@ -15,21 +15,25 @@ const startShiftsNumbers = startShifts.map(shift => shift.split(':')[0]);
 
 startShiftsNumbers.forEach(shiftStartHour => {
     // Schedule a job for 30 minutes after the start of each shift
-    Cron(`30 ${shiftStartHour} * * *`, () => checkAsistencia);
+    Cron(`30 ${shiftStartHour} * * *`, () => checkAsistencia());
   }
 );
 
 // Run once a day at 07:00 ahd deletePastShifts
-Cron('0 7 * * *', () => deletePastShifts);
+Cron('0 7 * * *', () => deletePastShifts());
 
 // Run once a year, the 1st of january at 07:00
-Cron('0 7 1 1 *', () => clearHoursAndHolidays);
+Cron('0 7 1 1 *', () => clearHoursAndHolidays());
 
 // Run once a week, Monday at 07:00
-Cron('0 7 * * 1', () => checkMandatoryRest);
+Cron('0 7 * * 1', () => checkMandatoryRest());
 
 //Trial
 //Cron('* * * * *', () => console.log('Server is alive'));
 //Cron('20 17 * * *', () => console.log('Server is alive, 17:20'));
+
+//Trial api
+//Cron(`14 17 * * *`, () => checkAsistencia());
+
 
 
