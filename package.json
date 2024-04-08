@@ -1,0 +1,12 @@
+{
+    "name": "heroku-deploy-wrapper",
+    "version": "1.0.0",
+    "scripts": {
+      "postinstall": "npm install --prefix back/",
+      "start": "npm start --prefix back/"
+    },
+    "engines": {
+      "node": "20.11.1"
+    }
+  }
+  
