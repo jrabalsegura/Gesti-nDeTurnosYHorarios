@@ -14,6 +14,7 @@ const getShifts = async (req, res) => {
 }
 
 const getJustStartedShifts = async (req, res) => {
+    console.log('Inside getJustStartedShifts')
     const shifts = await Shift.find({
         start: { $gte: new Date(new Date().getTime() - 30 * 60 * 1000) }
     });

@@ -33,7 +33,7 @@ Cron('0 7 * * 1', () => checkMandatoryRest());
 //Cron('20 17 * * *', () => console.log('Server is alive, 17:20'));
 
 //Trial api
-//Cron(`14 17 * * *`, () => checkAsistencia());
+//Cron(`35 17 * * *`, () => checkAsistencia());
 
 
 
