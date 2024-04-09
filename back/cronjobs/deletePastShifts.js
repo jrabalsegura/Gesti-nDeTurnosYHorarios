@@ -6,7 +6,7 @@ const deletePastShifts = async () => {
     const shifts = await api.get('/shifts');
 
     const today = new Date();
-    for (const shift of shifts.data) {
+    for (const shift of shifts.data.shifts) {
         const endDate = new Date(shift.end);
         if (endDate < today) {
             try {
