@@ -16,12 +16,12 @@ const checkHolidays = async () => {
     }
 
     //Holidays that end today
-    response = await api.get('/holidays/end');
-    console.log('Holidays ending today:', response.data.holidays);
+    const responseHolidaysEnd = await api.get('/holidays/end');
+    console.log('Holidays ending today:', responseHolidaysEnd.data.holidays);
 
-    if(response.data.holidays.length > 0) {
+    if(responseHolidaysEnd.data.holidays.length > 0) {
         //For each holiday, get the user and change its status tu onHolidays
-        response.data.holidays.forEach(async (holiday) => {
+        responseHolidaysEnd.data.holidays.forEach(async (holiday) => {
             const employee = await Employee.findById(holiday.employeeId);
             await api.post(`/employees/${employee._id}/changeOnHolidays`);
         });
