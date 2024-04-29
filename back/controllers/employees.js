@@ -48,9 +48,10 @@ const updateEmployee = async (req, res) => {
     try {
         //Return the updated employee
         const employee = await Employee.findByIdAndUpdate(id, {name, username, password, hourlySallary}, {new: true});
-        res.status(200).json({ok: true, employee, newPassword});
+        res.status(200).json({ok: true, employee, password});
     } catch (error) {
-        res.status(500).json({ok: false, msg: 'Error updating employee'});
+        console.log(error)
+        res.status(500).json({ok: false, msg: 'Error updating employee', error});
     }
 }
 
