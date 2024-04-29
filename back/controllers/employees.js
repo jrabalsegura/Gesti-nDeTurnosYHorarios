@@ -38,12 +38,12 @@ const getEmployee = async (req, res) => {
 
 const updateEmployee = async (req, res) => {
     const {id} = req.params;
-    let {name, username, password, hourlySallary} = req.body;
+    const {name, username, hourlySallary} = req.body;
 
     //Encriptar la contraseña
     const salt = bcrypt.genSaltSync(10);
 
-    password = bcrypt.hashSync(password, salt);
+    const password = bcrypt.hashSync(req.body.password, salt);
 
     try {
         //Return the updated employee
