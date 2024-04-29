@@ -1,4 +1,5 @@
 const Ausencia = require('../models/Ausencia');
+const Notification = require('../models/Notification');
 
 const getAusencias = async (req, res) => {
 
@@ -26,6 +27,12 @@ const createAusencia = async (req, res) => {
     try {
         const ausencia = new Ausencia({date, employeeId, motivo, rutaJustificante});
         await ausencia.save();
+
+        //Create notification for admin
+        const type = 'ausencia';
+        const notification = new Notification({type, employeeId, startDate});
+        await notification.save();
+
         res.status(200).json({ok: true, ausencia});
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error creating ausencia'});
