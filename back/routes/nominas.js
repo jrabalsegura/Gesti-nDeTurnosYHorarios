@@ -14,7 +14,8 @@ router.get('/', getNominas);
 
 router.post('/new', [
     check('employeeId', 'The employeeId is required').isMongoId(),
-    check('date', 'The startDate is required').custom(isDate),
+    check('month', 'The month is required').isNumeric(),
+    check('year', 'The year is required').isNumeric(),
     check('file', 'The ruta to the file is required').isString(),
     validateFields,
     validateAdmin
