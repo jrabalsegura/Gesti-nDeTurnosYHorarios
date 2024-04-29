@@ -2,11 +2,13 @@
     "name": "heroku-deploy-wrapper",
     "version": "1.0.0",
     "scripts": {
-      "postinstall": "npm install --prefix back/",
-      "start": "npm start --prefix back/"
+        "postinstall": "npm install --prefix back/",
+        "start": "npm start --prefix back/"
     },
     "engines": {
-      "node": "20.11.1"
+        "node": "20.11.1"
+    },
+    "dependencies": {
+        "cors": "^2.8.5"
     }
-  }
-  
+}

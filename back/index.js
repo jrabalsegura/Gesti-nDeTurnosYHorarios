@@ -12,7 +12,9 @@ const app = express();
 dbConnection();
 
 // CORS
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173' // Adjust this to match the domain of your frontend app
+}));
 
 //Directorio pblico
 app.use(express.static('public'));
