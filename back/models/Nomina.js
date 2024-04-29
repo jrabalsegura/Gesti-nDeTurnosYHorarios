@@ -1,8 +1,12 @@
 const {Schema, model} = require('mongoose');
 
 const NominaSchema = Schema({
-    date: {
-        type: Date,
+    month: {
+        type: Number,
+        required: true
+    },
+    year: {
+        type: Number,
         required: true
     },
     employeeId: {

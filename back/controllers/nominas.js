@@ -14,9 +14,9 @@ const getNominas = async (req, res) => {
 }
 
 const createNomina = async (req, res) => {
-    const {employeeId, date, file} = req.body;
+    const {employeeId, month, year, file} = req.body;
     try {
-        const nomina = new Nomina({employeeId, date, file});
+        const nomina = new Nomina({employeeId, month, year, file});
         await nomina.save();
         res.status(200).json({ok: true, nomina});
     } catch (error) {
