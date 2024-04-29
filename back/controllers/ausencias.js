@@ -30,12 +30,13 @@ const createAusencia = async (req, res) => {
 
         //Create notification for admin
         const type = 'ausencia';
-        const notification = new Notification({type, employeeId, date});
+        const startDate = date;
+        const notification = new Notification({type, employeeId, startDate});
         await notification.save();
 
         res.status(200).json({ok: true, ausencia});
     } catch (error) {
-        res.status(500).json({ok: false, msg: 'Error creating ausencia'});
+        res.status(500).json({ok: false, msg: 'Error creating ausencia', error});
     }
 }
 
