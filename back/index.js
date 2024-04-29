@@ -12,10 +12,12 @@ const app = express();
 dbConnection();
 
 // CORS
-//Configure correctly when deploying
-//app.use(cors({
-//    origin: 'http://localhost:5173' // Adjust this to match the domain of your frontend app
-//}));
+const allowedOrigins = ['http://localhost:5173', 'https://gestion-horarios-cd0d24b996c6.herokuapp.com'];
+
+app.use(cors({
+    origin: allowedOrigins
+}));
+
 
 //Directorio pblico
 app.use(express.static('public'));
