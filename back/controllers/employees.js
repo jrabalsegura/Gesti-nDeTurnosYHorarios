@@ -1,5 +1,6 @@
 const { createUser } = require('../helpers/createUser');
 const Employee = require('../models/Employee');
+const bcrypt = require('bcryptjs');
 
 const getEmployees = async (req, res) => {
 
@@ -38,6 +39,11 @@ const getEmployee = async (req, res) => {
 const updateEmployee = async (req, res) => {
     const {id} = req.params;
     const {name, username, password, startDate, hourlySallary} = req.body;
+
+    //Encriptar la contraseña
+    const salt = bcrypt.genSaltSync(10);
+
+    password = bcrypt.hashSync(body.password, salt);
 
     try {
         //Return the updated employee
