@@ -38,16 +38,16 @@ const getEmployee = async (req, res) => {
 
 const updateEmployee = async (req, res) => {
     const {id} = req.params;
-    const {name, username, password, startDate, hourlySallary} = req.body;
+    const {name, username, password, hourlySallary} = req.body;
 
     //Encriptar la contraseña
     const salt = bcrypt.genSaltSync(10);
 
-    password = bcrypt.hashSync(body.password, salt);
+    const newPassword = bcrypt.hashSync(password, salt);
 
     try {
         //Return the updated employee
-        const employee = await Employee.findByIdAndUpdate(id, {name, username, password, startDate, hourlySallary}, {new: true});
+        const employee = await Employee.findByIdAndUpdate(id, {name, username, newPassword, hourlySallary}, {new: true});
         res.status(200).json({ok: true, employee});
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error updating employee'});
