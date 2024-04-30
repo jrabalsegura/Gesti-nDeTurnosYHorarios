@@ -9,7 +9,7 @@ const uploadFile = (req, res) => {
     const myFile = req.files.file;
 
     //  mv() method places the file inside public directory
-    myFile.mv(`./public/${myFile.name}`, function (err) {
+    myFile.mv(`./public/files/${myFile.name}`, function (err) {
         if (err) {
             console.log(err)
             return res.status(500).send({ msg: "Error occured" });
