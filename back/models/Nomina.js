@@ -14,9 +14,20 @@ const NominaSchema = Schema({
         ref: 'Empleado',
         required: true
     },
-    file: {
-        //Ruta del archivo
-        type: String,
+    baseSallary: {
+        type: Number,
+        required: true
+    },
+    horasExtra: {
+        type: Number,
+        required: true
+    },
+    socialSecurity: {
+        type: Number,
+        required: true
+    },
+    pago: {
+        type: Number,
         required: true
     }
 });

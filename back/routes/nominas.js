@@ -16,7 +16,10 @@ router.post('/new', [
     check('employeeId', 'The employeeId is required').isMongoId(),
     check('month', 'The month is required').isNumeric(),
     check('year', 'The year is required').isNumeric(),
-    check('file', 'The ruta to the file is required').isString(),
+    check('baseSallary', 'The sallary is required').isNumeric(),
+    check('horasExtra', 'The extra hours are required').isNumeric(),
+    check('socialSecurity', 'The social security payment is required').isNumeric(),
+    check('pago', 'The payment is required').isNumeric(),
     validateFields,
     validateAdmin
 ], createNomina);
