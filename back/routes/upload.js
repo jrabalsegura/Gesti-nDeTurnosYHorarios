@@ -10,11 +10,15 @@ const upload = multer({ storage: storage });
 
 router.use(validateJWT);
 
-router.post('/', upload.single('file'), (req, res, next) => {
-  console.log(req.file); // This should log the file info
-  console.log(req.files); // This might be undefined unless configured differently
+router.post('/', (req, res, next) => {
+  console.log(req.headers);
+  req.on('data', chunk => console.log('Received data chunk'));
+  req.on('end', () => console.log('Request data transmission ended'));
   next();
-}, uploadFile);
+}, upload.single('file'), (req, res) => {
+  console.log(req.file); // Log the file information
+  res.send('File uploaded');
+});
 
 module.exports = router;
 
