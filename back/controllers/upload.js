@@ -1,22 +1,23 @@
+const { uploadFileToS3 } = require('../aws/config')
 
-
-const uploadFile = (req, res) => {
+const uploadFile = async (req, res) => {
     if (!req.files) {
         return res.status(500).send({ msg: "file is not found" })
     }
     
     // accessing the file
     const myFile = req.files.file;
+    const fileName = myFile.name;
 
-    //  mv() method places the file inside public directory
-    myFile.mv(`./public/files/${myFile.name}`, function (err) {
-        if (err) {
-            console.log(err)
-            return res.status(500).send({ msg: "Error occured" });
-        }
-        // returning the response with file path and name
-        return res.send({name: myFile.name, path: `/${myFile.name}`});
-    });
+    // Upload to S3
+    try {
+        fileUrl = await uploadFileToS3(fileName, myFile);
+        console.log('File URL:', fileUrl);
+    } catch (err) {
+        console.error(err);
+    }
+
+    res.status(200).json({ fileName, fileUrl });
 }
 
 module.exports = {
