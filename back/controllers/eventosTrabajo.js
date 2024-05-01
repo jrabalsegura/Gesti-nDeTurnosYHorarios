@@ -8,10 +8,10 @@ const getEvents = async (req, res) => {
 }
 
 const createEvent = async (req, res) => {
-    const { type, employeeId, date } = req.body;
+    const { type, employeeId, date, name } = req.body;
 
     try {
-        const evento = new EventoTrabajo({ type, employeeId, date });
+        const evento = new EventoTrabajo({ type, employeeId, date, name });
         await evento.save();
 
         console.log(evento);

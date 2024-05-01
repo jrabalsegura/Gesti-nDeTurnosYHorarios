@@ -13,6 +13,9 @@ const EventoTrabajoSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Empleado',
         required: true
+    },
+    name: {
+        type: String
     }
 });
 

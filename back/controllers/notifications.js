@@ -6,10 +6,10 @@ const getNotifications = async (req, res) => {
 }
 
 const createNotification = async (req, res) => {
-    const {type, employeeId, startDate, endDate} = req.body;
+    const {type, employeeId, startDate, endDate, name} = req.body;
 
     try {
-        const notification = new Notification({type, employeeId, startDate, endDate});
+        const notification = new Notification({type, employeeId, startDate, endDate, name});
         await notification.save();
         res.status(201).json({ok: true, notification});
         
