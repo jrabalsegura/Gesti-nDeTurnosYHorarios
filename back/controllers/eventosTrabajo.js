@@ -9,7 +9,7 @@ const getEvents = async (req, res) => {
 
     //Write events to file events.txt
     try {
-        fs.writeFileSync('./public/files/events.txt', eventos);
+        fs.writeFileSync('./public/files/events.txt', JSON.stringify(eventos));
         // file written successfully
         console.log('File written');
       } catch (err) {
