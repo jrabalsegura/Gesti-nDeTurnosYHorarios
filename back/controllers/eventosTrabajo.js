@@ -2,31 +2,23 @@ const EventoTrabajo = require('../models/EventoTrabajo');
 const RegistroTrabajo = require('../models/RegistroTrabajo');
 const { getLastEventByEmployeeId } = require('../helpers/getLastEventByEmployeeId');
 const { workEvents } = require('../config/config');
-const fs = require('node:fs');
-const path = require('path');
+const { uploadFileToS3 } = require('../aws/config')
 
 const getEvents = async (req, res) => {
     const eventos = await EventoTrabajo.find();
 
-    // Define the directory and file path
-    const directoryPath = path.join(__dirname, './public/files');
-    const filePath = path.join(directoryPath, 'events.txt');
+    // Convert eventos to a JSON string
+    const eventosString = JSON.stringify(eventos);
 
-    // Ensure the directory exists
-    if (!fs.existsSync(directoryPath)) {
-        fs.mkdirSync(directoryPath, { recursive: true });
+    // Upload to S3
+    try {
+        const fileUrl = await uploadFileToS3('events.txt', eventosString);
+        console.log('File URL:', fileUrl);
+    } catch (err) {
+        console.error(err);
     }
 
-    //Write events to file events.txt
-    try {
-        fs.writeFileSync(filePath, JSON.stringify(eventos));
-        // file written successfully
-        console.log('File written');
-      } catch (err) {
-        console.error(err);
-      }
-
-    res.status(200).json({ eventos });
+    res.status(200).json({ eventos, fileUrl });
 }
 
 const createEvent = async (req, res) => {

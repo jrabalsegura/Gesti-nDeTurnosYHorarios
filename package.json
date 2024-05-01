@@ -9,6 +9,7 @@
         "node": "20.11.1"
     },
     "dependencies": {
+        "aws-sdk": "^2.1610.0",
         "cors": "^2.8.5",
         "croner": "^8.0.2"
     }
