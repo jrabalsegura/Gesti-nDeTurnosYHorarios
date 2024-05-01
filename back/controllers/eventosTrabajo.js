@@ -7,9 +7,18 @@ const fs = require('node:fs');
 const getEvents = async (req, res) => {
     const eventos = await EventoTrabajo.find();
 
+    // Define the directory and file path
+    const directoryPath = path.join(__dirname, './public/files');
+    const filePath = path.join(directoryPath, 'events.txt');
+
+    // Ensure the directory exists
+    if (!fs.existsSync(directoryPath)) {
+        fs.mkdirSync(directoryPath, { recursive: true });
+    }
+
     //Write events to file events.txt
     try {
-        fs.writeFileSync('./public/files/events.txt', JSON.stringify(eventos));
+        fs.writeFileSync(filePath, JSON.stringify(eventos));
         // file written successfully
         console.log('File written');
       } catch (err) {
