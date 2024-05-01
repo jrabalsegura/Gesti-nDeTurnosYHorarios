@@ -1,4 +1,4 @@
-const { uploadFileToS3 } = require('../aws/config')
+const { uploadSelectedFile } = require('../aws/config')
 
 const uploadFile = async (req, res) => {
     if (!req.files) {
@@ -8,10 +8,11 @@ const uploadFile = async (req, res) => {
     // accessing the file
     const myFile = req.files.file;
     const fileName = myFile.name;
+    let fileUrl = '';
 
     // Upload to S3
     try {
-        fileUrl = await uploadFileToS3(fileName, myFile);
+        fileUrl = await uploadSelectedFile(fileName, myFile);
         console.log('File URL:', fileUrl);
     } catch (err) {
         console.error(err);

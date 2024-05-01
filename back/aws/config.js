@@ -26,6 +26,25 @@ const uploadFileToS3 = async (fileName, content) => {
     }
 };
 
+const uploadSelectedFile = async (file) => {
+  const params = {
+      Bucket: process.env.S3_BUCKET_NAME, // Your S3 Bucket name
+      Key: `${Date.now()}_${file.originalname}`, // File name you want to save as in S3
+      Body: file.buffer,
+      ContentType: file.mimetype
+  };
+
+  try {
+    const stored = await s3.upload(params).promise();
+    return stored.Location;
+  } catch(error) {
+    console.error('Error uploading file:', err);
+    throw err;
+  }
+  
+}
+
 module.exports = {
+  uploadSelectedFile,
   uploadFileToS3
 }
