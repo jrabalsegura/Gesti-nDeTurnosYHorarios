@@ -23,9 +23,9 @@ const getAusencia = async (req, res) => {
 }
 
 const createAusencia = async (req, res) => {
-    const {date, employeeId, motivo, rutaJustificante} = req.body;
+    const {date, employeeId, motivo, justificante} = req.body;
     try {
-        const ausencia = new Ausencia({date, employeeId, motivo, rutaJustificante});
+        const ausencia = new Ausencia({date, employeeId, motivo, justificante});
         await ausencia.save();
 
         //Create notification for admin

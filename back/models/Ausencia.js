@@ -15,7 +15,7 @@ const AusenciaSchema = Schema({
         required: true
     },
     justificante: {
-        // Ruta del archivo
+        // Nombre del archivo
         type: String
     }
 });
