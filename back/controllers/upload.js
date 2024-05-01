@@ -9,17 +9,13 @@ const uploadFile = async (req, res) => {
     console.log(req.files.file)
     const name = req.files.file.name
     const fileContent = req.files.file.data
-
-    console.log('Original data type:', fileContent.constructor.name); // Log the original data type
-
-    const buffer = Buffer.from(fileContent); // Convert to Buffer
-    console.log('Converted data type:', buffer.constructor.name); 
+    const mimeType = req.files.file.mimeType
 
     let fileUrl = '';
 
     // Upload to S3
     try {
-        fileUrl = await uploadSelectedFile(name, buffer);
+        fileUrl = await uploadSelectedFile(name, fileContent, mimeType);
         console.log('File URL:', fileUrl);
     } catch (err) {
         console.error(err);
