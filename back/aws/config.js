@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const multer = require('multer');
+
 
 // Configure AWS to use your credentials
 AWS.config.update({
