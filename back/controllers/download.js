@@ -1,7 +1,7 @@
 const axios = require('axios');
+const { temporalURL } = require('../aws/config');
 
 const downloadFile = async (req, res) => {
-  const fileUrl = req.body.url; // URL of the file to download
   const fileName = req.body.name;
   const fileType = req.body.type;
   if (!fileUrl) {
@@ -10,7 +10,7 @@ const downloadFile = async (req, res) => {
 
   try {
       const response = await axios({
-          url: fileUrl,
+          url: temporalURL(fileName),
           method: 'GET',
           responseType: 'stream' // This ensures that the response type is a stream
       });

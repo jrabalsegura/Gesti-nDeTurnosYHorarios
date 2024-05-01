@@ -46,7 +46,22 @@ const uploadSelectedFile = async (fileName, fileContent, mimeType) => {
   
 }
 
+const temporalURL = (fileName) => {
+  const bucketName = process.env.S3_BUCKET_NAME;
+  const key = fileName;
+  const signedUrlExpireSeconds = 60 * 5;
+
+  const url = s3.getSignedUrl('getObject', {
+    Bucket: bucketName,
+    Key: key,
+    Expires: signedUrlExpireSeconds
+  });
+
+  return url;
+}
+
 module.exports = {
   uploadSelectedFile,
-  uploadFileToS3
+  uploadFileToS3,
+  temporalURL
 }
