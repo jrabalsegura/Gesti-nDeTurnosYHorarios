@@ -8,7 +8,7 @@ const uploadFile = async (req, res) => {
     // accessing the file
     console.log(req.files.file)
     const name = req.files.file.name
-    const fileContent = req.files.file.data
+    const fileContent = Buffer.from(req.files.file.data)
 
     let fileUrl = '';
 
@@ -18,6 +18,7 @@ const uploadFile = async (req, res) => {
         console.log('File URL:', fileUrl);
     } catch (err) {
         console.error(err);
+        res.status(500).send({ msg: 'Failed to upload file', error: err });
     }
 
     res.status(200).json({ fileUrl });
