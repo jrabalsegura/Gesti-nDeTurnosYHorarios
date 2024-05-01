@@ -6,13 +6,12 @@ const uploadFile = async (req, res) => {
     }
     
     // accessing the file
-    const myFile = req.files.file;
-    const fileName = myFile.name;
+    const fileContent = Buffer.from(req.files.file.data, 'binary')
     let fileUrl = '';
 
     // Upload to S3
     try {
-        fileUrl = await uploadSelectedFile(myFile);
+        fileUrl = await uploadSelectedFile(fileContent);
         console.log('File URL:', fileUrl);
     } catch (err) {
         console.error(err);
