@@ -39,6 +39,7 @@ app.use('/holidays', require('./routes/holidays'));
 app.use('/nominas', require('./routes/nominas'));
 app.use('/employees', require('./routes/employees'));
 app.use('/upload', require('./routes/upload'));
+app.use('/download', require('/routes/download'))
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
