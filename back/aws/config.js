@@ -10,10 +10,6 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-// Multer setup for file uploads
-const storage = multer.memoryStorage(); // Use memory storage to handle the file as a buffer
-const upload = multer({ storage: storage });
-
 const uploadFileToS3 = async (fileName, content) => {
     const params = {
         Bucket: process.env.S3_BUCKET_NAME,
