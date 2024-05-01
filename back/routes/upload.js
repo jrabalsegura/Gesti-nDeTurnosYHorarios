@@ -12,6 +12,8 @@ router.use(validateJWT);
 
 router.post('/', (req, res, next) => {
   console.log(req.headers);
+  req.on('data', chunk => console.log('Received data chunk'));
+  req.on('end', () => console.log('Request data transmission ended'));
   next();
 }, upload.single('file'), (req, res) => {
   console.log(req.file); // Log the file information
