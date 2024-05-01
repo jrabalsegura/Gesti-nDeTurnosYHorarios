@@ -27,11 +27,11 @@ const uploadFileToS3 = async (fileName, content) => {
     }
 };
 
-const uploadSelectedFile = async (file) => {
+const uploadSelectedFile = async (fileName, file) => {
 
   const params = {
       Bucket: process.env.S3_BUCKET_NAME, // Your S3 Bucket name
-      Key: `${Date.now()}_${file.originalname}`, // File name you want to save as in S3
+      Key: `${Date.now()}_${fileName}`, // File name you want to save as in S3
       Body: file.buffer,
       ContentType: file.mimetype
   };
