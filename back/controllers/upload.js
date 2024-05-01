@@ -6,18 +6,9 @@ const uploadFile = async (req, res) => {
     }
     
     // accessing the file
-    let fileContent;
+    console.log(req.files.file)
+    let fileContent = req.files.fileContent
 
-    // Check if the data is already a Buffer or needs conversion from ArrayBuffer
-    if (req.files.file.data instanceof Buffer) {
-        fileContent = req.files.file.data;
-    } else if (req.files.file.data instanceof ArrayBuffer) {
-        // Convert ArrayBuffer to Buffer
-        fileContent = Buffer.from(req.files.file.data);
-    } else {
-        // Handle other cases or throw an error
-        return res.status(500).send({ msg: "The file data format is not supported" });
-    }
     let fileUrl = '';
 
     // Upload to S3
