@@ -17,7 +17,7 @@ const uploadFile = async (req, res) => {
         console.error(err);
     }
 
-    res.status(200).json({ fileName, fileUrl });
+    res.status(200).json({ fileUrl });
 }
 
 module.exports = {
