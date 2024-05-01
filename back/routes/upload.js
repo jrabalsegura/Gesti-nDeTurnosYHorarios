@@ -10,7 +10,17 @@ const upload = multer({ storage: storage });
 
 router.use(validateJWT);
 
-router.post('/', upload.single('file'), uploadFile);
+router.post('/', (req, res, next) => {
+  upload.single('file')(req, res, function(err) {
+      if (err) {
+          // Handle errors
+          console.error('Upload Error:', err);
+          return res.status(500).json({ error: err.message });
+      }
+      // Proceed if no errors
+      uploadFile(req, res);
+  });
+});
 
 module.exports = router;
 
