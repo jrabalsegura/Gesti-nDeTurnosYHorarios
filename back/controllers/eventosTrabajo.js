@@ -3,6 +3,7 @@ const RegistroTrabajo = require('../models/RegistroTrabajo');
 const { getLastEventByEmployeeId } = require('../helpers/getLastEventByEmployeeId');
 const { workEvents } = require('../config/config');
 const fs = require('node:fs');
+const path = require('path');
 
 const getEvents = async (req, res) => {
     const eventos = await EventoTrabajo.find();
