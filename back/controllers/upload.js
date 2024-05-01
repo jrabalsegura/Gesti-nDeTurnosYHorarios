@@ -12,7 +12,7 @@ const uploadFile = async (req, res) => {
 
     // Upload to S3
     try {
-        fileUrl = await uploadSelectedFile(fileName, myFile);
+        fileUrl = await uploadSelectedFile(myFile);
         console.log('File URL:', fileUrl);
     } catch (err) {
         console.error(err);

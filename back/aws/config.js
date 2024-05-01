@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const multer = require('multer');
 
 // Configure AWS to use your credentials
 AWS.config.update({
@@ -8,6 +9,10 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3();
+
+// Multer setup for file uploads
+const storage = multer.memoryStorage(); // Use memory storage to handle the file as a buffer
+const upload = multer({ storage: storage });
 
 const uploadFileToS3 = async (fileName, content) => {
     const params = {
@@ -27,6 +32,7 @@ const uploadFileToS3 = async (fileName, content) => {
 };
 
 const uploadSelectedFile = async (file) => {
+
   const params = {
       Bucket: process.env.S3_BUCKET_NAME, // Your S3 Bucket name
       Key: `${Date.now()}_${file.originalname}`, // File name you want to save as in S3
