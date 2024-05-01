@@ -2,8 +2,20 @@ const EventoTrabajo = require('../models/EventoTrabajo');
 const RegistroTrabajo = require('../models/RegistroTrabajo');
 const { getLastEventByEmployeeId } = require('../helpers/getLastEventByEmployeeId');
 const { workEvents } = require('../config/config');
+const fs = require('node:fs');
+
 const getEvents = async (req, res) => {
     const eventos = await EventoTrabajo.find();
+
+    //Write events to file events.txt
+    try {
+        fs.writeFileSync('./public/files/events.txt', eventos);
+        // file written successfully
+        console.log('File written');
+      } catch (err) {
+        console.error(err);
+      }
+
     res.status(200).json({ eventos });
 }
 
