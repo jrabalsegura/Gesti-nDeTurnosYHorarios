@@ -20,7 +20,7 @@ const uploadFileToS3 = async (fileName, content) => {
     try {
         const stored = await s3.upload(params).promise();
         console.log('File uploaded successfully at', stored.Location);
-        return stored.Location;
+        return stored.Key;
     } catch (err) {
         console.error('Error uploading file:', err);
         throw err;
@@ -38,7 +38,7 @@ const uploadSelectedFile = async (fileName, fileContent, mimeType) => {
 
   try {
     const stored = await s3.upload(params).promise();
-    return stored.Location;
+    return stored.Key;
   } catch(err) {
     console.error('Error uploading file:', err);
     throw err;

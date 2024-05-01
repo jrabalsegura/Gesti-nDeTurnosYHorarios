@@ -11,18 +11,18 @@ const uploadFile = async (req, res) => {
     const fileContent = req.files.file.data
     const mimeType = req.files.file.mimeType
 
-    let fileUrl = '';
+    let fileName = '';
 
     // Upload to S3
     try {
-        fileUrl = await uploadSelectedFile(name, fileContent, mimeType);
-        console.log('File URL:', fileUrl);
+        fileName = await uploadSelectedFile(name, fileContent, mimeType);
+        console.log('File URL:', fileName);
     } catch (err) {
         console.error(err);
         res.status(500).send({ msg: 'Failed to upload file', error: err });
     }
 
-    res.status(200).json({ name, fileUrl });
+    res.status(200).json({ fileName });
 }
 
 module.exports = {

@@ -10,17 +10,17 @@ const getEvents = async (req, res) => {
     // Convert eventos to a JSON string
     const eventosString = JSON.stringify(eventos);
 
-    let fileUrl = '';
+    let fileName = '';
 
     // Upload to S3
     try {
-        fileUrl = await uploadFileToS3('events.txt', eventosString);
-        console.log('File URL:', fileUrl);
+        fileName = await uploadFileToS3('events.txt', eventosString);
+        console.log('File URL:', fileName);
     } catch (err) {
         console.error(err);
     }
 
-    res.status(200).json({ eventos, fileUrl });
+    res.status(200).json({ eventos, fileName });
 }
 
 const createEvent = async (req, res) => {
