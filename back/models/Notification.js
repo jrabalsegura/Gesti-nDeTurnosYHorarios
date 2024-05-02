@@ -19,6 +19,9 @@ const NotificationSchema = Schema({
     },
     name: {
         type: String
+    },
+    justificante: {
+        type: String
     }
 });
 
