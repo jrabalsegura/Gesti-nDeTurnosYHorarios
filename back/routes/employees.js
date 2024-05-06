@@ -26,6 +26,9 @@ const {
 } = require('../controllers/employees');
 
 router.use(validateJWT);
+
+router.get('/:id', getEmployee);
+
 router.use(validateAdmin);
 
 router.get('/', getEmployees);
@@ -42,7 +45,7 @@ router.post(
     ], 
     createEmployee);
 
-router.get('/:id', getEmployee);
+
 
 router.put(
     '/:id', 
