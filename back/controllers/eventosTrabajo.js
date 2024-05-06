@@ -43,7 +43,10 @@ const createEvent = async (req, res) => {
             if (prevEvent.type === workEvents.checkin) {
 
                 //Calc hours prom prev event to actual
-                const hours = (date - prevEvent.date) / (1000 * 60 * 60);
+                const prevEventDate = new Date(prevEvent.date);
+                const currentDate = new Date(date);
+
+                const hours = (currentDate - prevEventDate) / (1000 * 60 * 60);
 
                 //If hours > 24, then there is an error
                 console.log(date)
