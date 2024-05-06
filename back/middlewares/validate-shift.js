@@ -25,7 +25,8 @@ const validateShift = async (req, res, next) => {
     }
 
     // Check if the last eventoTrabajo was a checkout in the previous 12 hours
-    const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
+    //const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
+    const twelveHoursAgo = new Date(start);
     const lastEvent = await EventoTrabajo.findOne({
         employeeId,
         date: { $gte: twelveHoursAgo }
