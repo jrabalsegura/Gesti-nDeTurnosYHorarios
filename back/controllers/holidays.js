@@ -39,6 +39,13 @@ const getHolidaysEndToday = async (req, res) => {
     }
 }
 
+const getHolidays = async (req, res) => {
+    const {id} = req.params;
+
+    const holidays = await Holiday.find({employeeId: id})
+    res.status(200).json({holidays});
+}
+
 const createHoliday = async (req, res) => {
 
     try {
@@ -54,5 +61,6 @@ const createHoliday = async (req, res) => {
 module.exports = {
     getHolidaysStartToday,
     getHolidaysEndToday,
-    createHoliday
+    createHoliday,
+    getHolidays
 }
