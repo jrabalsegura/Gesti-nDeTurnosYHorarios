@@ -29,6 +29,18 @@ router.use(validateJWT);
 
 router.get('/:id', getEmployee);
 
+router.put(
+    '/:id', 
+    [
+        check('name', 'The name is required').not().isEmpty(),
+        check('name', 'The name is not admin').custom(isNotAdmin),
+        check('username', 'The username is required').not().isEmpty(),
+        check('password', 'The password is required').not().isEmpty(),
+        check('startDate', 'The start date is a date').optional().custom(isDate),
+        validateFields
+    ], 
+    updateEmployee);
+
 router.use(validateAdmin);
 
 router.get('/', getEmployees);
@@ -47,17 +59,7 @@ router.post(
 
 
 
-router.put(
-    '/:id', 
-    [
-        check('name', 'The name is required').not().isEmpty(),
-        check('name', 'The name is not admin').custom(isNotAdmin),
-        check('username', 'The username is required').not().isEmpty(),
-        check('password', 'The password is required').not().isEmpty(),
-        check('startDate', 'The start date is a date').optional().custom(isDate),
-        validateFields
-    ], 
-    updateEmployee);
+
 
 router.delete('/:id', deleteEmployee);
 
