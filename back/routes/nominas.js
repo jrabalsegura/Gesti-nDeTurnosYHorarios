@@ -10,7 +10,12 @@ const {getNominas, createNomina} = require('../controllers/nominas');
 
 router.use(validateJWT);
 
-router.get('/', getNominas);
+router.get('/', [
+    check('employeeId', 'The employeeId is required').isMongoId(),
+    check('month', 'The month is required').isNumeric(),
+    check('year', 'The year is required').isNumeric(),
+    validateFields
+], getNominas);
 
 router.post('/new', [
     check('employeeId', 'The employeeId is required').isMongoId(),
