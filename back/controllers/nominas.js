@@ -3,10 +3,10 @@ const Nomina = require('../models/Nomina');
 const getNominas = async (req, res) => {
 
     //Find all then nominas by employeeId
-    const {employeeId, month, year} = req.body;
+    const {employeeId, month, year} = req.query;
 
     try {
-        const nomina = await Nomina.find({employeeId, month, year});
+        const nomina = await Nomina.find({ employeeId, month: parseInt(month), year: parseInt(year) });
         if (nomina.length > 0) {
             res.status(200).json({ok: true, nomina});
         } else {
