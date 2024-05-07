@@ -23,7 +23,7 @@ const getAusencia = async (req, res) => {
 }
 
 const createAusencia = async (req, res) => {
-    const {date, employeeId, motivo, justificante} = req.body;
+    const {date, employeeId, motivo, justificante, name} = req.body;
     try {
         const ausencia = new Ausencia({date, employeeId, motivo, justificante});
         await ausencia.save();
@@ -31,7 +31,7 @@ const createAusencia = async (req, res) => {
         //Create notification for admin
         const type = 'ausencia';
         const startDate = date;
-        const notification = new Notification({type, employeeId, startDate});
+        const notification = new Notification({type, name, employeeId, startDate, justificante});
         await notification.save();
 
         res.status(200).json({ok: true, ausencia});
