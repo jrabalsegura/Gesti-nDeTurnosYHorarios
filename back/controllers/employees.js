@@ -19,7 +19,7 @@ const createEmployee = async (req, res) => {
 
     try {
 
-        if (hourlySallary == null) {
+        if (hourlySallary == '') {
             hourlySallary = legislacion.sallary;
         }
         console.log(legislacion.sallary)
