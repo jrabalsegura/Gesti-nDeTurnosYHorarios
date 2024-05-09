@@ -28,13 +28,13 @@ const createEvent = async (req, res) => {
 
     try {
         
+        const prevEvent = await getLastEventByEmployeeId(employeeId);
 
+        console.log(prevEvent);
         //Here, when event type = 'checkOut' we create a new registrosTrabajo'
         if (type === workEvents.checkout) {
             
-            const prevEvent = await getLastEventByEmployeeId(employeeId);
-
-            console.log(prevEvent);
+            
             //Check if previous event is a checkin
             if (prevEvent.type === workEvents.checkin) {
 
