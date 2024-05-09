@@ -27,77 +27,39 @@ const createEvent = async (req, res) => {
     const { type, employeeId, date, name } = req.body;
 
     try {
-        
         const prevEvent = await getLastEventByEmployeeId(employeeId);
 
-        console.log(prevEvent);
-        //Here, when event type = 'checkOut' we create a new registrosTrabajo'
+        // Prevent consecutive same type events
+        if (prevEvent && prevEvent.type === type) {
+            return res.status(400).json({ "ok": false, msg: `Cannot have consecutive ${type} events` });
+        }
+
+        // Proceed with creating the event
+        const evento = new EventoTrabajo({ type, employeeId, date, name });
+        await evento.save();
+
+        // Additional logic for checkout events
         if (type === workEvents.checkout) {
-            
-            
-            //Check if previous event is a checkin
-            if (prevEvent.type === workEvents.checkin) {
+            const prevEventDate = new Date(prevEvent.date);
+            const currentDate = new Date(date);
+            const hours = (currentDate - prevEventDate) / (1000 * 60 * 60);
 
-                const evento = new EventoTrabajo({ type, employeeId, date, name });
-                await evento.save();
-
-                console.log(evento);
-
-                //Calc hours prom prev event to actual
-                const prevEventDate = new Date(prevEvent.date);
-                const currentDate = new Date(date);
-
-                const hours = (currentDate - prevEventDate) / (1000 * 60 * 60);
-
-                //If hours > 24, then there is an error
-                console.log(date)
-                console.log(prevEvent.date)
-                console.log(hours);
-                if (hours > 24) {
-                    return res.status(400).json({ "ok": false, msg: 'There is no checkin in the previous 24 hours' });
-                }
-
-                if (!isNaN(hours)) {
-                    const registro = new RegistroTrabajo({ employeeId, date: currentDate, hours });
-                    await registro.save();
-                } else {
-                    return res.status(400).json({ "ok": false, msg: 'Invalid hours calculation' });
-                }
-
-                //Create a new registro
-                const registro = new RegistroTrabajo({ employeeId, date, hours });
-                await registro.save();
-
-                res.status(201).json({ evento });
-            } else {
-                res.status(500).json({"ok": false, error, msg:"Último evento fue una salida"})
+            if (hours > 24) {
+                return res.status(400).json({ "ok": false, msg: 'There is no checkin in the previous 24 hours' });
             }
-        } else {
-            //Check if previous event is a checkout o no existe
-            if (prevEvent && prevEvent.type === workEvents.checkout) {
 
-                const evento = new EventoTrabajo({ type, employeeId, date, name });
-                await evento.save();
-
-                console.log(evento);
-
-                res.status(201).json({ evento });
-            } else if (!prevEvent) {
-                const evento = new EventoTrabajo({ type, employeeId, date, name });
-                await evento.save();
-
-                console.log(evento);
-
-                res.status(201).json({ evento });
+            if (!isNaN(hours)) {
+                const registro = new RegistroTrabajo({ employeeId, date: currentDate, hours });
+                await registro.save();
             } else {
-                res.status(500).json({"ok": false, error, msg:"Último evento fue una entrada"})
+                return res.status(400).json({ "ok": false, msg: 'Invalid hours calculation' });
             }
         }
+
+        res.status(201).json({ evento });
     } catch (error) {
         res.status(500).json({ "ok": false, error, msg: 'Error creating event' });
     }
-
-
 }
 
 const getLastHour = async (req, res) => {
