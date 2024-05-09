@@ -73,8 +73,8 @@ const createEvent = async (req, res) => {
                 res.status(500).json({"ok": false, error, msg:"Último evento fue una salida"})
             }
         } else {
-            //Check if previous event is a checkout
-            if (prevEvent.type === workEvents.checkout) {
+            //Check if previous event is a checkout o no existe
+            if (prevEvent.type !== workEvents.checkin) {
 
                 const evento = new EventoTrabajo({ type, employeeId, date, name });
                 await evento.save();
