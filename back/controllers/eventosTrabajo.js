@@ -27,20 +27,21 @@ const createEvent = async (req, res) => {
     const { type, employeeId, date, name } = req.body;
 
     try {
-        const evento = new EventoTrabajo({ type, employeeId, date, name });
-        await evento.save();
-
-        console.log(evento);
+        
 
         //Here, when event type = 'checkOut' we create a new registrosTrabajo'
         if (type === workEvents.checkout) {
-            console.log('here');
             
             const prevEvent = await getLastEventByEmployeeId(employeeId);
 
             console.log(prevEvent);
             //Check if previous event is a checkin
             if (prevEvent.type === workEvents.checkin) {
+
+                const evento = new EventoTrabajo({ type, employeeId, date, name });
+                await evento.save();
+
+                console.log(evento);
 
                 //Calc hours prom prev event to actual
                 const prevEventDate = new Date(prevEvent.date);
@@ -66,12 +67,25 @@ const createEvent = async (req, res) => {
                 //Create a new registro
                 const registro = new RegistroTrabajo({ employeeId, date, hours });
                 await registro.save();
+
+                res.status(201).json({ evento });
+            } else {
+                res.status(500).json({"ok": false, error, msg:"Último evento fue una salida"})
+            }
+        } else {
+            //Check if previous event is a checkout
+            if (prevEvent.type === workEvents.checkout) {
+
+                const evento = new EventoTrabajo({ type, employeeId, date, name });
+                await evento.save();
+
+                console.log(evento);
+
+                res.status(201).json({ evento });
+            } else {
+                res.status(500).json({"ok": false, error, msg:"Último evento fue una salida"})
             }
         }
-
-
-        res.status(201).json({ evento });
-
     } catch (error) {
         res.status(500).json({ "ok": false, error, msg: 'Error creating event' });
     }
