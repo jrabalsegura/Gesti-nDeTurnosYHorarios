@@ -83,7 +83,7 @@ const createEvent = async (req, res) => {
 
                 res.status(201).json({ evento });
             } else {
-                res.status(500).json({"ok": false, error, msg:"Último evento fue una salida"})
+                res.status(500).json({"ok": false, error, msg:"Último evento fue una entrada"})
             }
         }
     } catch (error) {
