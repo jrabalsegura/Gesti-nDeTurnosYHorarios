@@ -22,6 +22,7 @@ const createEmployee = async (req, res) => {
         if (hourlySallary == null) {
             hourlySallary = legislacion.sallary;
         }
+        console.log(legislacion.sallary)
         const employee = await createUser({name, username, password, startDate, hourlySallary});
 
         res.status(201).json({ok: true, employee});
