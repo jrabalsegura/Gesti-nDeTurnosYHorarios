@@ -15,8 +15,8 @@ dbConnection();
 const allowedOrigins = ['http://localhost:5173', 'https://gestion-horarios-cd0d24b996c6.herokuapp.com'];
 
 app.use(cors({
-    origin: allowedOrigins
-    //origin: true
+    //origin: allowedOrigins
+    origin: true
 }));
 
 
