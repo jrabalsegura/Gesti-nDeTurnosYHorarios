@@ -74,8 +74,15 @@ const createEvent = async (req, res) => {
             }
         } else {
             //Check if previous event is a checkout o no existe
-            if (prevEvent.type !== workEvents.checkin) {
+            if (prevent && prevEvent.type === workEvents.checkout) {
 
+                const evento = new EventoTrabajo({ type, employeeId, date, name });
+                await evento.save();
+
+                console.log(evento);
+
+                res.status(201).json({ evento });
+            } else if (!prevent) {
                 const evento = new EventoTrabajo({ type, employeeId, date, name });
                 await evento.save();
 
