@@ -15,7 +15,7 @@ const getEmployees = async (req, res) => {
 }
 
 const createEmployee = async (req, res) => {
-    const {name, username, password, startDate, hourlySallary} = req.body;
+    let {name, username, password, startDate, hourlySallary} = req.body;
 
     try {
 
