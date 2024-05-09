@@ -1,6 +1,7 @@
 const { createUser } = require('../helpers/createUser');
 const Employee = require('../models/Employee');
 const bcrypt = require('bcryptjs');
+const { legislacion } = require('../config/config');
 
 const getEmployees = async (req, res) => {
 
@@ -17,6 +18,10 @@ const createEmployee = async (req, res) => {
     const {name, username, password, startDate, hourlySallary} = req.body;
 
     try {
+
+        if (hourlySallary == null) {
+            hourlySallary = legislacion.sallary;
+        }
         const employee = await createUser({name, username, password, startDate, hourlySallary});
 
         res.status(201).json({ok: true, employee});
