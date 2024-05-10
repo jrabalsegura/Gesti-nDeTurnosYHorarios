@@ -22,25 +22,19 @@ const getNominas = async (req, res) => {
 const createNomina = async (req, res) => {
     const {employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago} = req.body;
 
-    const nominas = await Nomina.find({employeeId, month, year});
-    if (nominas.length > 0) {
-        res.status(500).json({ok: false, msg: 'Nomina ya existe para empleado y mes'});
-    } else {
-        try {
-            const fileName = await createPDF(req.body);
-            console.log(fileName);
+    try {
+        const fileName = await createPDF(req.body);
+        console.log(fileName);
 
-            const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago});
-            await nomina.save();
+        const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago});
+        await nomina.save();
 
-            console.log('Nomina creada!');
+        console.log('Nomina creada!');
 
-            res.status(200).json({ok: true, nomina});
-        } catch (error) {
-            res.status(500).json({ok: false, msg: 'Error creating nomina', error: error.message});
-        }
+        res.status(200).json({ok: true, nomina});
+    } catch (error) {
+        res.status(500).json({ok: false, msg: 'Error creating nomina', error: error.message});
     }
-    
 }
 
 module.exports = {
