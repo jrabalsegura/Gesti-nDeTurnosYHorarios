@@ -2,7 +2,7 @@ const { jsPDF } = require("jspdf");
 const { uploadFileToS3 } = require("../aws/config");
 
 const createPDF = async (body) => {
-	const { employeeName, month, year, baseSallary, horasExtra, socialSecurity, pago } = req.body;
+	const { employeeName, month, year, baseSallary, horasExtra, socialSecurity, pago } = body;
     const doc = new jsPDF();
 
 	console.log("Creating pdf");
