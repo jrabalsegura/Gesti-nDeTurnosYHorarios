@@ -22,7 +22,6 @@ const getNominas = async (req, res) => {
 const createNomina = async (req, res) => {
     const {employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago} = req.body;
 
-    console.log(req.body);
     const nominas = await Nomina.find({employeeId, month, year});
     if (nominas.length > 0) {
         res.status(500).json({ok: false, msg: 'Nomina ya existe para empleado y mes'});
