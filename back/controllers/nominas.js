@@ -25,7 +25,7 @@ const createNomina = async (req, res) => {
     const prevNomina = await Nomina.findOne({employeeId, month, year});
 
     if (prevNomina) {
-        res.status(409).json({ok: false, msg: 'Nomina already exists', prevNomina, error: error.message});
+        res.status(409).json({ok: false, msg: 'Nomina already exists', prevNomina});
     }
     try {
         const fileName = await createPDF(req.body);
