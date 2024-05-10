@@ -33,8 +33,16 @@ const createNomina = async (req, res) => {
 
         res.status(200).json({ok: true, nomina});
     } catch (error) {
-        const nomina = Nomina.find({employeeId, month, year})
-        res.status(500).json({ok: false, msg: 'Error creating nomina', nomina, error: error.message});
+        try {
+            const existingNomina = await Nomina.findOne({employeeId, month, year});
+            if (existingNomina) {
+                res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina, error: error.message});
+            } else {
+                res.status(500).json({ok: false, msg: 'Error creating nomina', error: error.message});
+            }
+        } catch (dbError) {
+            res.status(500).json({ok: false, msg: 'Database error', error: dbError.message});
+        }
     }
 }
 
