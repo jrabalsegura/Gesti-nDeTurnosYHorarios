@@ -1,3 +1,4 @@
+const { createPDF } = require('../helpers/createPDF');
 const Nomina = require('../models/Nomina');
 
 const getNominas = async (req, res) => {
@@ -28,6 +29,9 @@ const createNomina = async (req, res) => {
         try {
             const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago});
             await nomina.save();
+
+            await createPDF(req.body);
+            
             res.status(200).json({ok: true, nomina});
         } catch (error) {
             res.status(500).json({ok: false, msg: 'Error creating nomina'}, error);
