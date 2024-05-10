@@ -26,7 +26,7 @@ const createNomina = async (req, res) => {
         const fileName = await createPDF(req.body);
         console.log(fileName);
 
-        const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago});
+        const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago, fileName});
         await nomina.save();
 
         console.log('Nomina creada!');

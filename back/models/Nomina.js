@@ -29,6 +29,10 @@ const NominaSchema = Schema({
     pago: {
         type: Number,
         required: true
+    },
+    fileName: {
+        type: String,
+        required: true
     }
 });
 
