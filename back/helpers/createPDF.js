@@ -7,12 +7,11 @@ const createPDF = async (body) => {
 	doc.text("Hello world!!", 10, 10);
 
 	const fileName = "hello.pdf"
-
-	doc.save(fileName);
+	const pdfOutput = doc.output('arraybuffer');
 
 	//Upload to S3
 	try {
-		await uploadFileToS3(fileName, doc);
+		await uploadFileToS3(fileName, Buffer.from(pdfOutput));
 		console.log('File uploaded to S3: ', fileName);
 
 		return fileName;
