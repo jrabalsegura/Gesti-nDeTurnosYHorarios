@@ -29,11 +29,11 @@ const createNomina = async (req, res) => {
         try {
             const fileName = await createPDF(req.body);
             console.log(fileName);
-            
+
             const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago});
             await nomina.save();
 
-            
+            console.log('Nomina creada!');
 
             res.status(200).json({ok: true, nomina});
         } catch (error) {
