@@ -37,7 +37,7 @@ const createNomina = async (req, res) => {
 
             res.status(200).json({ok: true, nomina});
         } catch (error) {
-            res.status(500).json({ok: false, msg: 'Error creating nomina'}, error);
+            res.status(500).json({ok: false, msg: 'Error creating nomina', error: error.message});
         }
     }
     
