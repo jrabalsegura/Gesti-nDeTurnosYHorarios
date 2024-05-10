@@ -2,12 +2,24 @@ const { jsPDF } = require("jspdf");
 const { uploadFileToS3 } = require("../aws/config");
 
 const createPDF = async (body) => {
-	const doc = new jsPDF();
+	const { employeeName, month, year, baseSallary, horasExtra, socialSecurity, pago } = req.body;
+    const doc = new jsPDF();
 
-	doc.text("Hello world!!", 10, 10);
+    // Set the font for the title and subtitles
+    doc.setFontSize(18);
+    doc.text(employeeName, 20, 20);
+    doc.setFontSize(14);
+    doc.text(`${month} ${year}`, 20, 30);
 
-	const fileName = "hello.pdf"
-	const pdfOutput = doc.output('arraybuffer');
+    // Set the font for the body
+    doc.setFontSize(12);
+    doc.text(`Salario base: ${baseSallary.toFixed(2)} €`, 20, 50);
+    doc.text(`Horas Extra: ${horasExtra} horas`, 20, 60);
+    doc.text(`Seguridad Social: ${socialSecurity.toFixed(2)} €`, 20, 70);
+    doc.text(`Pago: ${pago.toFixed(2)} €`, 20, 80);
+
+    const fileName = `${employeeName.replace(/\s+/g, '_')}_${month}_${year}.pdf`;
+    const pdfOutput = doc.output('arraybuffer');
 
 	//Upload to S3
 	try {
