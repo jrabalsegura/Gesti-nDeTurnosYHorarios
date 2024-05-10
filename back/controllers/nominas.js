@@ -22,10 +22,10 @@ const getNominas = async (req, res) => {
 const createNomina = async (req, res) => {
     const {employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago} = req.body;
 
-    const prevNomina = await Nomina.findOne({employeeId, month, year});
+    let existingNomina = await Nomina.findOne({employeeId, month, year});
 
-    if (prevNomina) {
-        res.status(409).json({ok: false, msg: 'Nomina already exists', prevNomina});
+    if (existingNomina) {
+        res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
     }
     try {
         const fileName = await createPDF(req.body);
@@ -39,7 +39,7 @@ const createNomina = async (req, res) => {
         res.status(200).json({ok: true, nomina});
     } catch (error) {
         try {
-            const existingNomina = await Nomina.findOne({employeeId, month, year});
+            existingNomina = await Nomina.findOne({employeeId, month, year});
             if (existingNomina) {
                 res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina, error: error.message});
             } else {
