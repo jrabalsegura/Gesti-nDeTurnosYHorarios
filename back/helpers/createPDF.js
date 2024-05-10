@@ -43,3 +43,7 @@ const createPDF = async (body) => {
         return null;
     }
 }
+
+module.exports = {
+    createPDF
+}
