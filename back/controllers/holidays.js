@@ -59,10 +59,9 @@ const createHoliday = async (req, res) => {
 }
 
 const deleteHoliday = async (req, res) => {
-    const {holidayId} = req.params;
-    console.log(holidayId);
+    const {id} = req.params;
     try {
-        await Holiday.findByIdAndDelete(holidayId);
+        await Holiday.findByIdAndDelete(id);
         res.status(200).json({ok: true});
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error deleting holiday'});
