@@ -21,10 +21,16 @@ const getNominas = async (req, res) => {
 
 const createNomina = async (req, res) => {
     const {employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago} = req.body;
-    
+    let fileName = '';
     try {
-        const fileName = await createPDF(req.body);
-        console.log(fileName);
+        //Check if NODE_ENV is production
+        if (process.env.NODE_ENV !== 'test') {
+            fileName = await createPDF(req.body);
+            console.log(fileName);
+        } else {
+            fileName = 'test.pdf';
+        }
+        
 
         const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago, fileName});
         await nomina.save();
@@ -46,8 +52,20 @@ const createNomina = async (req, res) => {
     }
 }
 
+const deleteNomina = async (req, res) => {
+    const {nominaId} = req.params;
+    try {
+        const nomina = await Nomina.findById(nominaId);
+        await nomina.remove();
+        res.status(200).json({ok: true, nomina});
+    } catch (error) {
+        res.status(500).json({ok: false, msg: 'Error deleting nomina', error: error.message});
+    }
+}
+
 module.exports = {
     getNominas,
-    createNomina
+    createNomina,
+    deleteNomina
 }
 

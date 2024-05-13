@@ -5,7 +5,7 @@ const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-JWT');
 const { isDate } = require('../helpers/isDate');
 
-const {getHolidaysStartToday, getHolidaysEndToday, createHoliday, getHolidays} = require('../controllers/holidays');
+const {getHolidaysStartToday, getHolidaysEndToday, createHoliday, getHolidays, deleteHoliday} = require('../controllers/holidays');
 const { validateAdmin } = require('../middlewares/validate-admin');
 
 router.use(validateJWT);
@@ -22,6 +22,12 @@ router.post('/new', [
     check('employeeId', 'The employeeId is required').isMongoId(),
     validateFields
 ], createHoliday);
+
+router.delete('/:id', [
+    check('id', 'The id is required').isMongoId(),
+    validateFields,
+    validateAdmin
+], deleteHoliday);
 
 module.exports = router;
 

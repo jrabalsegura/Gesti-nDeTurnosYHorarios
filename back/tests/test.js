@@ -29,6 +29,7 @@ describe("Test suitcase", () => {
     describe("Ausencias Workflow", () => {
         let employeeId;
         let ausenciaId;
+        let notificationId;
 
         // Create user and get token
         beforeAll(async () => {
@@ -51,6 +52,7 @@ describe("Test suitcase", () => {
                 motivo: 'Test absence'
             });
             ausenciaId = ausenciaResponse.body.ausencia._id;
+            notificationId = ausenciaResponse.body.notification._id;
         });
 
 
@@ -62,6 +64,9 @@ describe("Test suitcase", () => {
 
             // remove created user
             await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+
+            // remove created notification
+            await request(app).delete(`/notificaciones/${notificationId}`).set('x-token', token);
 
         });
 
@@ -654,8 +659,176 @@ describe("Test suitcase", () => {
 
     });
 
-
+    describe("Holidays Workflow", () => {
+        let employeeId;
+        let holidayId;
     
+        beforeAll(async () => {
+            const employeeResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testHolidayUser',
+                password: 'testPass123',
+                name: 'Test Holiday User',
+                date: currentDate.toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+    
+        afterAll(async () => {
+            await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            if (holidayId) {
+                await request(app).delete(`/holidays/${holidayId}`).set('x-token', token);
+            }
+        });
+    
+        // Test to create a holiday successfully
+        it("should create a new holiday", async () => {
+            const response = await request(app).post('/holidays/new').set('x-token', token).send({
+                startDate: currentDate.toISOString(),
+                endDate: new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)).toISOString(), // +1 day
+                employeeId
+            });
+            expect(response.status).toBe(200);
+            expect(response.body.holiday).toBeDefined();
+            holidayId = response.body.holiday._id;
+        });
+    
+        // Test to fail creating a holiday without required fields
+        it("should fail to create a holiday without required fields", async () => {
+            const response = await request(app).post('/holidays/new').set('x-token', token).send({
+                startDate: currentDate.toISOString()
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors).toBeDefined();
+        });
+    
+        // Test to get holidays starting today
+        it("should get holidays starting today", async () => {
+            const response = await request(app).get('/holidays/start').set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.holidays).toBeDefined();
+            expect(response.body.holidays.length).toBeGreaterThanOrEqual(1);
+        });
+    
+        // Test to get holidays ending today
+        it("should get holidays ending today", async () => {
+            const response = await request(app).get('/holidays/end').set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.holidays).toBeDefined();
+            
+        });
+    
+        // Test to get holidays for an employee
+        it("should get holidays for a specific employee", async () => {
+            const response = await request(app).get(`/holidays/${employeeId}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.holidays).toBeDefined();
+        });
+    
+        // Test to fail getting holidays for a non-existing employee
+        it("should fail to get holidays for a non-existing employee", async () => {
+            const response = await request(app).get('/holidays/123456789012345678901234').set('x-token', token);
+            expect(response.status).toBe(200);  
+            expect(response.body.holidays).toEqual([]);
+        });
+    });
+
+
+    describe("Nominas Workflow", () => {
+        let employeeId;
+        let nominaId;
+    
+        beforeAll(async () => {
+            const employeeResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testNominaUser',
+                password: 'testPass123',
+                name: 'Test Nomina User',
+                date: currentDate.toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+    
+        afterAll(async () => {
+            await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+
+            if (nominaId) {
+                await request(app).delete(`/nominas/${nominaId}`).set('x-token', token);
+            }
+        });
+    
+        // Test to create a nomina successfully
+        it("should create a new nomina", async () => {
+            const response = await request(app).post('/nominas/new').set('x-token', token).send({
+                employeeId,
+                month: currentDate.getMonth() + 1,
+                year: currentDate.getFullYear(),
+                baseSallary: 2000,
+                horasExtra: 5,
+                socialSecurity: 200,
+                pago: 2200
+            });
+            nominaId = response.body.nomina._id;
+            expect(response.status).toBe(200);
+            expect(response.body.nomina).toBeDefined();
+        });
+    
+        // Test to fail creating nomina due to missing required fields
+        it("should fail to create a nomina without required fields", async () => {
+            const response = await request(app).post('/nominas/new').set('x-token', token).send({
+                employeeId,
+                month: currentDate.getMonth() + 1,
+                year: currentDate.getFullYear()
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors).toBeDefined();
+        });
+    
+        // Test to fail creating a duplicate nomina
+        it("should fail to create a duplicate nomina", async () => {
+            const response = await request(app).post('/nominas/new').set('x-token', token).send({
+                employeeId,
+                month: currentDate.getMonth() + 1,
+                year: currentDate.getFullYear(),
+                baseSallary: 2000,
+                horasExtra: 5,
+                socialSecurity: 200,
+                pago: 2200
+            });
+            expect(response.status).toBe(409);
+            expect(response.body.msg).toBe('Nomina already exists');
+        });
+    
+        // Test to get nominas successfully
+        it("should get nominas successfully", async () => {
+            const response = await request(app).get('/nominas').set('x-token', token).query({
+                employeeId,
+                month: currentDate.getMonth() + 1,
+                year: currentDate.getFullYear()
+            });
+            expect(response.status).toBe(200);
+            expect(response.body.nomina).toBeDefined();
+        });
+    
+        // Test to fail retrieving nominas due to missing required fields
+        it("should fail to get nominas without required fields", async () => {
+            const response = await request(app).get('/nominas').set('x-token', token).query({
+                employeeId,
+                month: currentDate.getMonth() + 1
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors).toBeDefined();
+        });
+    
+        // Test to fail retrieving nominas that don't exist
+        it("should fail to get nominas for non-existing employee", async () => {
+            const response = await request(app).get('/nominas').set('x-token', token).query({
+                employeeId: '123456789012345678901234',  // Non-existing employeeId
+                month: currentDate.getMonth() + 1,
+                year: currentDate.getFullYear()
+            });
+            expect(response.status).toBe(404);
+            expect(response.body.msg).toBe('Nómina no existe');
+        });
+    });
 
 
     

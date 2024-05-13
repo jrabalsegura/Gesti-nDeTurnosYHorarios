@@ -34,7 +34,7 @@ const createAusencia = async (req, res) => {
         const notification = new Notification({type, name, employeeId, startDate, justificante});
         await notification.save();
 
-        res.status(200).json({ok: true, ausencia});
+        res.status(200).json({ok: true, ausencia, notification});
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error creating ausencia', error});
     }

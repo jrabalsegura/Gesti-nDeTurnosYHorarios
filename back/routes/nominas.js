@@ -6,7 +6,7 @@ const { validateJWT } = require('../middlewares/validate-JWT');
 const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 
-const {getNominas, createNomina} = require('../controllers/nominas');
+const {getNominas, createNomina, deleteNomina} = require('../controllers/nominas');
 
 router.use(validateJWT);
 
@@ -28,6 +28,12 @@ router.post('/new', [
     validateFields,
     validateAdmin
 ], createNomina);
+
+router.delete('/:id', [
+    check('id', 'The id is required').isMongoId(),
+    validateFields,
+    validateAdmin
+], deleteNomina);
 
 module.exports = router;
 

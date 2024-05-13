@@ -58,9 +58,21 @@ const createHoliday = async (req, res) => {
     }
 }
 
+const deleteHoliday = async (req, res) => {
+    const {id} = req.params;
+    try {
+        const holiday = await Holiday.findById(id);
+        await holiday.remove();
+        res.status(200).json({ok: true, holiday});
+    } catch (error) {
+        res.status(500).json({ok: false, msg: 'Error deleting holiday'});
+    }
+}
+
 module.exports = {
     getHolidaysStartToday,
     getHolidaysEndToday,
     createHoliday,
-    getHolidays
+    getHolidays,
+    deleteHoliday
 }
