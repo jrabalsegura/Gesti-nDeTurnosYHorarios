@@ -66,7 +66,7 @@ const loginEmployee = async (req, res) => {
 			const token = await generateJWT(employee.id, employee.name);
 
 			//Respuesta al usuario
-			res.json({
+			res.status(200).json({
 				"ok": true,
 				uid: employee.id,
 				name: employee.name,

@@ -18,11 +18,11 @@ const createEmployee = async (req, res) => {
     let {name, username, password, startDate, hourlySallary} = req.body;
 
     try {
-
-        if (hourlySallary === '') {
+        // Check if hourlySallary is not provided, is null, or is an empty string
+        if (!hourlySallary && hourlySallary !== 0) {
             hourlySallary = legislacion.sallary;
         }
-        console.log(legislacion.sallary)
+        console.log(`Setting hourly salary to: ${hourlySallary}`);
         const employee = await createUser({name, username, password, startDate, hourlySallary});
 
         res.status(201).json({ok: true, employee});

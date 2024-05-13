@@ -4,6 +4,7 @@ let { app, stopApp } = require('../index');
 
 describe("Test suitcase", () => {
     let token;
+    const currentDate = new Date();
     
 
     beforeAll(async () => {
@@ -31,7 +32,7 @@ describe("Test suitcase", () => {
 
         // Create user and get token
         beforeAll(async () => {
-            const currentDate = new Date();
+            
             const userResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
                 username: 'testUser',
                 password: 'testPass123',
@@ -197,8 +198,164 @@ describe("Test suitcase", () => {
                 expect(response.body.message).toBe('User already exists');
         });
 
+        //Fail creation user without username
+        it("should not allow the creation of a user without username", async () => {
+            const response = await request(app)
+                .post(`/auth/new`)
+                .send({
+                    name: "AdminTest",
+                    password: "test12"
+                })
+
+            expect(response.status).toBe(400);
+            expect(response.body.errors.username.msg).toBe('The username is required');
+        });
+
+        //Allow login of user
+        it("should allow login of user", async () => {
+            const response = await request(app).post(`/auth/`).send({
+                username: "admintest",
+                password: "test12"
+            });
+            expect(response.status).toBe(200);
+            expect(response.body.uid).toBe(userId);
+        });
+
+        //Fail login without providing username
+        it("should not allow login without providing username", async () => {
+            const response = await request(app).post(`/auth/`).send({
+                password: "test12"
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors.username.msg).toBe('The username is required');
+        });
+
+        //Fail login with incorrect password
+        it("should not allow login with incorrect password", async () => {
+            const response = await request(app).post(`/auth/`).send({
+                username: "admintest",
+                password: "incorrect"
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('Password is incorrect');
+        });
+
+        //Fail login user does not exist
+        it("should not allow login of user that does not exist", async () => {
+            const response = await request(app).post(`/auth/`).send({
+                username: "userdoesnotexist",
+                password: "test12"
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe("User doesn't exist");
+        });
+
+        //Renew token
+        it("should allow renew token", async () => {
+            
+            const response = await request(app)
+                .get(`/auth/renew`)
+                .send({
+                    username: "admintest",
+                    password: "test12"
+                })
+                .set('x-token', token);
+            expect(response.status).toBe(200);
+        });
+
+        //Fail to renew token with incorrect token
+        it("should not allow renew token with incorrect token", async () => {
+            const response = await request(app)
+                .get(`/auth/renew`)
+                .set('x-token', 'incorrecttoken');
+            expect(response.status).toBe(401);
+        });
+
         
     });
+
+    describe("Employees Workflow", () => {
+        let employeeId;
+
+        beforeAll(async () => {
+            const employeeResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testUser',
+                password: 'testPass123',
+                name: 'Test User',
+                date: currentDate.toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+
+        afterAll(async () => {
+
+            // remove created user
+            await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+
+        });
+
+        //Get employee created
+        it("get employee test user", async () => {
+            const response = await request(app).get(`/employees/${employeeId}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.employee).toBeDefined();
+            expect(response.body.employee._id).toBe(employeeId);
+        });
+
+        //Fail get employee with incorrect id
+        it("should not allow get employee with incorrect id", async () => {
+            const response = await request(app).get(`/employees/123456789012`).set('x-token', token);
+            expect(response.status).toBe(500);
+            expect(response.body.msg).toBe('Error getting employee');
+        });
+
+        //Update employee name correctly
+        it("should allow update employee name correctly", async () => {
+            const response = await request(app).put(`/employees/${employeeId}`).set('x-token', token).send({
+                username: 'testUser',
+                password: 'testPass123',
+                name: 'Test User Updated',
+            });
+            expect(response.status).toBe(200);
+            expect(response.body.employee.name).toBe('Test User Updated');
+        });
+
+        //Fail if name = admin in update
+        it("should not allow update employee if username = admin", async () => {
+            const response = await request(app).put(`/employees/${employeeId}`).set('x-token', token).send({
+                username: 'admintest',
+                password: 'test12',
+                name: 'admin',
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors.name.msg).toBe('The name is not admin');
+        });
+
+        //Get all employees, at least get 1
+        it("should return all employees", async () => {
+            const response = await request(app).get(`/employees/`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.employees.length).toBeGreaterThanOrEqual(1);
+        });
+
+        //Create employee and test default sallary = 15
+        it("should create employee and test default sallary = 15", async () => {
+            const response = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testUser2',
+                password: 'testPass123',
+                name: 'Test User2',
+                date: currentDate.toISOString()
+            });
+            expect(response.status).toBe(201);
+            console.log(response);
+            expect(response.body.employee.hourlySallary).toBe(15);
+            await request(app).delete(`/employees/${response.body.employee._id}`).set('x-token', token);
+        });
+
+        
+    });
+
+
     
 
 
