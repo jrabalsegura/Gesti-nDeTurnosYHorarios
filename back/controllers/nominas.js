@@ -55,9 +55,8 @@ const createNomina = async (req, res) => {
 const deleteNomina = async (req, res) => {
     const {nominaId} = req.params;
     try {
-        const nomina = await Nomina.findById(nominaId);
-        await nomina.remove();
-        res.status(200).json({ok: true, nomina});
+        await Nomina.findByIdAndDelete(nominaId);
+        res.status(200).json({ok: true});
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error deleting nomina', error: error.message});
     }
