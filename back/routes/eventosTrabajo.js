@@ -6,7 +6,7 @@ const { validateJWT } = require('../middlewares/validate-JWT');
 const { isDate } = require('../helpers/isDate');
 const { isWorkEvent } = require('../helpers/isWorkEvent');
 
-const { getEvents, createEvent, getLastHour} = require('../controllers/eventosTrabajo');
+const { getEvents, createEvent, getLastHour, deleteEvent } = require('../controllers/eventosTrabajo');
 
 router.use(validateJWT);
 
@@ -20,6 +20,8 @@ router.post('/new', [
 ], createEvent);
 
 router.get('/last', getLastHour);
+
+router.delete('/:id', deleteEvent);
 
 
 module.exports = router;

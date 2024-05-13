@@ -30,7 +30,19 @@ const createRegistry = async (req, res) => {
     }
 }
 
+const deleteRegistry = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await RegistroTrabajo.findByIdAndDelete(id);
+        res.status(200).json({ ok: true, msg: 'Registry deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ ok: false, msg: 'Error deleting registry' });
+    }
+}
+
 module.exports = {
     getHours,
-    createRegistry
+    createRegistry,
+    deleteRegistry
 }

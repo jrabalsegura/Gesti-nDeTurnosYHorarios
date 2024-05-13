@@ -14,6 +14,7 @@ const getEvents = async (req, res) => {
 
     // Upload to S3
     try {
+        //Probando en local no funciona por falta de aws env variables
         fileName = await uploadFileToS3('events.txt', eventosString);
         console.log('File URL:', fileName);
     } catch (err) {
@@ -34,6 +35,10 @@ const createEvent = async (req, res) => {
             return res.status(400).json({ "ok": false, msg: `Cannot have consecutive ${type} events` });
         }
 
+        if (type === workEvents.checkout && !prevEvent) {
+            return res.status(400).json({ "ok": false, msg: 'Cannot have checkout without checkin' });
+        }
+
         // Proceed with creating the event
         const evento = new EventoTrabajo({ type, employeeId, date, name });
         await evento.save();
@@ -45,12 +50,14 @@ const createEvent = async (req, res) => {
             const hours = (currentDate - prevEventDate) / (1000 * 60 * 60);
 
             if (hours > 24) {
-                return res.status(400).json({ "ok": false, msg: 'There is no checkin in the previous 24 hours' });
+                return res.status(400).json({ "ok": false, evento,msg: 'There is no checkin in the previous 24 hours' });
             }
 
             if (!isNaN(hours)) {
                 const registro = new RegistroTrabajo({ employeeId, date: currentDate, hours });
                 await registro.save();
+
+                return res.status(201).json({ evento, registro });
             } else {
                 return res.status(400).json({ "ok": false, msg: 'Invalid hours calculation' });
             }
@@ -60,6 +67,12 @@ const createEvent = async (req, res) => {
     } catch (error) {
         res.status(500).json({ "ok": false, error, msg: 'Error creating event' });
     }
+}
+
+const deleteEvent = async (req, res) => {
+    const { id } = req.params;
+    await EventoTrabajo.findByIdAndDelete(id);
+    res.status(200).json({ "ok": true, msg: 'Event deleted' });
 }
 
 const getLastHour = async (req, res) => {
@@ -72,7 +85,8 @@ const getLastHour = async (req, res) => {
 module.exports = {
     getEvents,
     createEvent,
-    getLastHour
+    getLastHour,
+    deleteEvent
 }
 
 

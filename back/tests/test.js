@@ -338,8 +338,8 @@ describe("Test suitcase", () => {
             expect(response.body.employees.length).toBeGreaterThanOrEqual(1);
         });
 
-        //Create employee and test default sallary = 15
-        it("should create employee and test default sallary = 15", async () => {
+        //Create employee and test default sallary = 10
+        it("should create employee and test default sallary = 10", async () => {
             const response = await request(app).post(`/employees/new`).set('x-token', token).send({
                 username: 'testUser2',
                 password: 'testPass123',
@@ -347,12 +347,311 @@ describe("Test suitcase", () => {
                 date: currentDate.toISOString()
             });
             expect(response.status).toBe(201);
-            console.log(response);
-            expect(response.body.employee.hourlySallary).toBe(15);
+            expect(response.body.employee.hourlySallary).toBe(10);
             await request(app).delete(`/employees/${response.body.employee._id}`).set('x-token', token);
         });
 
+        //Create employee and test that gets the sallary provided in hourlySallary
+        it("should create employee and test that gets the sallary provided in hourlySallary", async () => {
+            const response = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testUser3',
+                password: 'testPass123',
+                name: 'Test User3',
+                date: currentDate.toISOString(),
+                hourlySallary: 30
+            });
+            expect(response.status).toBe(201);
+            expect(response.body.employee.hourlySallary).toBe(30);
+            await request(app).delete(`/employees/${response.body.employee._id}`).set('x-token', token);
+        });
+
+        //Fail if the provided hourlySallary is not a number
+        it("should not allow create employee if the provided hourlySallary is not a number", async () => {
+            const response = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testUser4',
+                password: 'testPass123',
+                name: 'Test User4',
+                date: currentDate.toISOString(),
+                hourlySallary: 'not-a-number'
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors.hourlySallary.msg).toBe('The sallary must be a number');           
+        });
+
+        //Ensure that deleted employee is not anymore in the database
+        it("should not allow delete employee that does not exist", async () => {
+            const response = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testUser4',
+                password: 'testPass123',
+                name: 'Test User4',
+                date: currentDate.toISOString()
+            });
+
+            //Get number of users
+            const users = await request(app).get(`/employees/`).set('x-token', token);
+            
+            await request(app).delete(`/employees/${response.body.employee._id}`).set('x-token', token);
+
+            const afterDelete = await request(app).get(`/employees/`).set('x-token', token);
+
+            expect(response.status).toBe(201);
+            expect(afterDelete.body.employees.length).toBe(users.body.employees.length - 1);
+        });
+
+        //Fail if id provided to delete not exist
+        it("should not allow delete employee that does not exist", async () => {
+            const response = await request(app).delete(`/employees/123456789012`).set('x-token', token);
+            expect(response.status).toBe(500);
+            expect(response.body.msg).toBe('Error deleting employee');
+        });
+
+        //Post extra hours and get them
+        it("should allow post extra hours and get them", async () => {
+            const response = await request(app).post(`/employees/${employeeId}/extraHours`).set('x-token', token).send({
+                hours: 10
+            });
+            expect(response.status).toBe(200);
+
+            const responseHours = await request(app).get(`/employees/${employeeId}/extraHours`).set('x-token', token);
+            
+            expect(responseHours.status).toBe(200);
+            expect(responseHours.body.extraHours).toBe(10);
+        });
+
+        //Fail if provided extra hours is not a number
+        it("should not allow post extra hours if provided hours is not a number", async () => {
+            const response = await request(app).post(`/employees/${employeeId}/extraHours`).set('x-token', token).send({
+                hours: 'not-a-number'
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors.hours.msg).toBe('The hours must be a number');
+        });
+
+        //Check that getSallary returns the correct sallary
+        it("should allow get sallary", async () => {
+            const response = await request(app).get(`/employees/${employeeId}/sallary`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.sallary).toBe(10);
+        });
+
+        //Fail if provided id is not in the system
+        it("should not allow get sallary if provided id is not in the system", async () => {
+            const response = await request(app).get(`/employees/123456789012/sallary`).set('x-token', token);
+            expect(response.status).toBe(500);
+            expect(response.body.msg).toBe('Error getting sallary');
+        });
+
+         //Post holidays and get them
+         it("should allow post holidays and get them", async () => {
+            const response = await request(app).post(`/employees/${employeeId}/holidays`).set('x-token', token).send({
+                days: 10
+            });
+            expect(response.status).toBe(200);
+
+            const responseHours = await request(app).get(`/employees/${employeeId}/holidays`).set('x-token', token);
+            
+            expect(responseHours.status).toBe(200);
+            expect(responseHours.body.holidays).toBe(10);
+
+            const responseTwo = await request(app).post(`/employees/${employeeId}/holidays`).set('x-token', token).send({
+                days: 15
+            });
+            const responseHoursTwo = await request(app).get(`/employees/${employeeId}/holidays`).set('x-token', token);
+
+            expect(responseTwo.status).toBe(200);
+            expect(responseHoursTwo.body.holidays).toBe(25);
+        });
+
+        //Fail if provided holidays is not a number
+        it("should not allow post holidays if provided days is not a number", async () => {
+            const response = await request(app).post(`/employees/${employeeId}/holidays`).set('x-token', token).send({
+                days: 'not-a-number'
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors.days.msg).toBe('The days must be a number');
+        });
+
+        //Toggle onHolidays ang get its value
+        it("should allow toggle onHolidays and get its value", async () => {
+
+            const response = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.onHolidays).toBe(false);
+
+            const responseTwo = await request(app).post(`/employees/${employeeId}/libre`).set('x-token', token);
+            expect(responseTwo.status).toBe(200);
+            expect(responseTwo.body.employee.onHolidays).toBe(true);
+        });
+
+        //Get valid start date
+        it("should allow get valid start date", async () => {
+            const response = await request(app).get(`/employees/${employeeId}/startDate`).set('x-token', token);
+            const responseUser = await request(app).get(`/employees/${employeeId}`).set('x-token', token);
+            const date = new Date(responseUser.body.employee.startDate);
+
+            expect(response.status).toBe(200);
+            expect(response.body.startDate).toBe(date.toISOString());
+        });
+
+        //Clear Hours and Holidays working
+        it("should allow clear hours and holidays working", async () => {
+            const response = await request(app).post(`/employees/${employeeId}/clear`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.employee.extraHours).toBe(0);
+            expect(response.body.employee.holidays).toBe(0);
+        });
         
+    });
+
+    describe("Eventos Trabajo Workflow", () => {
+        let employeeId;
+
+        beforeAll(async () => {
+            const employeeResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testUser',
+                password: 'testPass123',
+                name: 'Test User',
+                date: currentDate.toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+
+        afterAll(async () => {
+
+            // remove created user
+            await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+
+        });
+        
+        //Get all the events
+        it("should allow get all the events", async () => {
+            const response = await request(app).get(`/eventosTrabajo/`).set('x-token', token);
+            expect(response.status).toBe(200);
+            console.log(response.body)
+            expect(response.body.eventos.length).toBeGreaterThanOrEqual(1);
+        });
+
+        //Should allow to create a checkin event
+        it("should allow to create a checkin event", async () => {
+            const response = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: currentDate.toISOString()
+            });
+            expect(response.status).toBe(201);
+            expect(response.body.evento.type).toBe('checkin');
+
+            await request(app).delete(`/eventosTrabajo/${response.body.evento._id}`).set('x-token', token);
+        });
+
+        //Should failed if two consecutive checkin events
+        it("should failed if two consecutive checkin events", async () => {
+            const initialResponse = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: currentDate.toISOString()
+            });
+
+            expect(initialResponse.status).toBe(201);
+
+            const response = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: currentDate.toISOString()
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.msg).toBe('Cannot have consecutive checkin events');
+
+            await request(app).delete(`/eventosTrabajo/${initialResponse.body.evento._id}`).set('x-token', token);
+        });
+
+        //Should failed if checkout without previous checkin
+        it("should failed if checkout without previous checkin", async () => {
+            const response = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkout',
+                date: currentDate.toISOString()
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.msg).toBe('Cannot have checkout without checkin');
+        });
+
+        //Should allow to create a checkout event after a checkin, create a Registr and failed two checkouts
+        it("should allow to create a checkout event after a checkin", async () => {
+            //current date - 8 hours
+            const date = new Date(currentDate.getTime() - (8 * 60 * 60 * 1000));
+            const initialResponse = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: date.toISOString()
+            });
+
+            expect(initialResponse.status).toBe(201);
+
+
+            const response = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkout',
+                date: currentDate.toISOString()
+            });
+            expect(response.status).toBe(201);
+            expect(response.body.evento.type).toBe('checkout');
+            expect(response.body.registro).toBeDefined();
+            expect(response.body.registro.hours).toBe(8);
+
+            const lastResponse = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkout',
+                date: currentDate.toISOString()
+            });
+            expect(lastResponse.status).toBe(400);
+            expect(lastResponse.body.msg).toBe('Cannot have consecutive checkout events');
+
+            await request(app).delete(`/eventosTrabajo/${initialResponse.body.evento._id}`).set('x-token', token);
+            await request(app).delete(`/eventosTrabajo/${response.body.evento._id}`).set('x-token', token);
+            await request(app).delete(`/registrosTrabajo/${response.body.registro._id}`).set('x-token', token);
+        });
+
+        //Should failed if the checkin was more than 24 hours ago
+        it("should failed if the checkin was more than 24 hours ago", async () => {
+            //current date - 25 hours
+            const date = new Date(currentDate.getTime() - (25 * 60 * 60 * 1000));
+            const initialResponse = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: date.toISOString()
+            });
+
+            expect(initialResponse.status).toBe(201);
+
+
+            const response = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkout',
+                date: currentDate.toISOString()
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.msg).toBe('There is no checkin in the previous 24 hours');
+
+            await request(app).delete(`/eventosTrabajo/${initialResponse.body.evento._id}`).set('x-token', token);
+            await request(app).delete(`/eventosTrabajo/${response.body.evento._id}`).set('x-token', token);
+        });
+
+        //Should return at least 1 event recently created in getLastHour
+        it("should return at least 1 event recently created in getLastHour", async () => {
+            const response = await request(app).post(`/eventosTrabajo/new`).set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: currentDate.toISOString()
+            });
+
+            const responseLast = await request(app).get(`/eventosTrabajo/last`).set('x-token', token);
+            expect(responseLast.status).toBe(200);
+            expect(responseLast.body.events.length).toBeGreaterThanOrEqual(1);
+
+            await request(app).delete(`/eventosTrabajo/${response.body.evento._id}`).set('x-token', token);
+        });
+
     });
 
 

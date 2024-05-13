@@ -185,7 +185,9 @@ const changeOnHolidays = async (req, res) => {
         }
 
         employee.onHolidays = !employee.onHolidays;
+        
         await employee.save();
+
         res.status(200).json({ok: true, employee});
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error changing on holidays'});

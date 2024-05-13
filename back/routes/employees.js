@@ -52,14 +52,10 @@ router.post(
         check('username', 'The username is required').not().isEmpty(),
         check('password', 'The password is required').not().isEmpty(),
         check('startDate', 'The start date is a date').optional().custom(isDate),
-        check('sallary', 'The sallary must be a number').optional().isNumeric(),
+        check('hourlySallary', 'The sallary must be a number').optional().isNumeric(),
         validateFields
     ], 
     createEmployee);
-
-
-
-
 
 router.delete('/:id', deleteEmployee);
 

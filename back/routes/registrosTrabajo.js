@@ -5,7 +5,7 @@ const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-JWT');
 const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
-const { getHours, createRegistry } = require('../controllers/registrosTrabajo');
+const { getHours, createRegistry, deleteRegistry } = require('../controllers/registrosTrabajo');
 
 router.use(validateJWT);
 
@@ -20,6 +20,8 @@ router.post('/new',
     ],
     createRegistry
 );
+
+router.delete('/:id', validateAdmin, deleteRegistry);
 
 module.exports = router;
 
