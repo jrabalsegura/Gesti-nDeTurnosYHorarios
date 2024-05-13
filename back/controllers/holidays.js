@@ -60,6 +60,7 @@ const createHoliday = async (req, res) => {
 
 const deleteHoliday = async (req, res) => {
     const {holidayId} = req.params;
+    console.log(holidayId);
     try {
         await Holiday.findByIdAndDelete(holidayId);
         res.status(200).json({ok: true});
