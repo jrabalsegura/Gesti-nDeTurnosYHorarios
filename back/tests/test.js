@@ -830,7 +830,94 @@ describe("Test suitcase", () => {
         });
     });
 
-
+    describe("RegistrosTrabajo Workflow", () => {
+        let employeeId;
+        let registryId;
     
+        // Setup: Create an employee
+        beforeAll(async () => {
+            const employeeResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testRegistryUser',
+                password: 'testPass123',
+                name: 'Test Registry User',
+                date: currentDate.toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+    
+        // Cleanup: Delete the employee and the created registry
+        afterAll(async () => {
+            if (employeeId) {
+                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            }
+            if (registryId) {
+                await request(app).delete(`/registrosTrabajo/${registryId}`).set('x-token', token);
+            }
+        });
+    
+        // Test to create a registry successfully
+        it("should create a new registry", async () => {
+            const response = await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
+                employeeId,
+                date: currentDate.toISOString(),
+                hours: 8
+            });
+            expect(response.status).toBe(200);
+            expect(response.body.ok).toBe(true);
+            registryId = response.body.registro._id; // Store the created registry ID
+        });
+    
+        // Test to fail creating registry due to missing required fields
+        it("should fail to create a registry without required fields", async () => {
+            const response = await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
+                employeeId,
+                date: currentDate.toISOString(),
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors).toBeDefined();
+        });
+    
+        // Test to get hours successfully
+        it("should get hours successfully", async () => {
+            const from = new Date(currentDate.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString();
+            const to = currentDate.toISOString();
+            const response = await request(app).get(`/registrosTrabajo/${employeeId}&${from}&${to}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.hoursWorked).toBe(8);
+        });
+    
+        // Test to fail getting hours due to invalid date range
+        it("should fail to get hours with invalid date range", async () => {
+            const from = 'invalid-date';
+            const to = currentDate.toISOString();
+            const response = await request(app).get(`/registrosTrabajo/${employeeId}&${from}&${to}`).set('x-token', token);
+            expect(response.status).toBe(500);  // Adjust based on your error handling
+            expect(response.body.msg).toBe('Error getting hours');
+        });
+    
+        // Test to fail getting hours when no records found
+        it("should fail to get hours when no records found", async () => {
+            const from = new Date(currentDate.getTime() - (30 * 24 * 60 * 60 * 1000)).toISOString();
+            const to = new Date(currentDate.getTime() - (29 * 24 * 60 * 60 * 1000)).toISOString();
+            const response = await request(app).get(`/registrosTrabajo/${employeeId}&${from}&${to}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.hoursWorked).toBe(0);  
+        });
+    
+        // Test to delete a registry successfully
+        it("should delete a registry successfully", async () => {
+            const response = await request(app).delete(`/registrosTrabajo/${registryId}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.ok).toBe(true);
+            registryId = null;  // Reset registryId since it's deleted
+        });
+    
+        // Test to fail deleting a registry with invalid ID
+        it("should fail to delete a registry with invalid ID", async () => {
+            const response = await request(app).delete(`/registrosTrabajo/invalid-id`).set('x-token', token);
+            expect(response.status).toBe(500);  
+            expect(response.body.msg).toBe('Error deleting registry');
+        });
+    }); 
 });
 

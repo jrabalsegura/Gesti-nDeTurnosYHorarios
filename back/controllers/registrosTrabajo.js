@@ -24,7 +24,7 @@ const createRegistry = async (req, res) => {
         const registro = new RegistroTrabajo({ employeeId, date, hours });
         await registro.save();
 
-        res.status(200).json({ ok: true, msg: 'Registry created successfully' });
+        res.status(200).json({ ok: true, msg: 'Registry created successfully', registro });
     } catch (error) {
         res.status(500).json({ ok: false, msg: 'Error creating registry' });
     }
@@ -35,9 +35,9 @@ const deleteRegistry = async (req, res) => {
 
     try {
         await RegistroTrabajo.findByIdAndDelete(id);
-        res.status(200).json({ ok: true, msg: 'Registry deleted successfully' });
+        return res.status(200).json({ ok: true, msg: 'Registry deleted successfully' });
     } catch (error) {
-        res.status(500).json({ ok: false, msg: 'Error deleting registry' });
+        return res.status(500).json({ ok: false, msg: 'Error deleting registry' });
     }
 }
 
