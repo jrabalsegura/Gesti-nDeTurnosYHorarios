@@ -8,7 +8,7 @@ const getAusencias = async (req, res) => {
         const ausencias = await Ausencia.find({employeeId: req.params.employeeId});
         res.status(200).json({ok: true, ausencias});
     } catch (error) {
-        res.status(500).json({ok: false, msg: 'Error fetching ausencias'});
+        res.status(404).json({ok: false, msg: 'Error fetching ausencias'});
     }
 }
 
@@ -18,7 +18,7 @@ const getAusencia = async (req, res) => {
         const ausencia = await Ausencia.findById(id);
         res.status(200).json({ok: true, ausencia});
     } catch (error) {
-        res.status(500).json({ok: false, msg: 'Error fetching ausencia'});
+        res.status(404).json({ok: false, msg: 'Error fetching ausencia'});
     }
 }
 
@@ -46,7 +46,7 @@ const deleteAusencia = async (req, res) => {
         await Ausencia.findByIdAndDelete(id);
         res.status(200).json({ok: true});
     } catch (error) {
-        res.status(500).json({ok: false, msg: 'Error deleting ausencia'});
+        res.status(404).json({ok: false, msg: 'Error deleting ausencia'});
     }
 }
 
