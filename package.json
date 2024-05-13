@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "scripts": {
         "postinstall": "npm install --prefix back/",
-        "start": "npm start --prefix back/"
+        "start": "npm start --prefix back/",
+        "test": "cross-env NODE_ENV=test jest --testTimeout=5000",
+        "dev": "nodemon back/index.js"
     },
     "engines": {
         "node": "20.11.1"

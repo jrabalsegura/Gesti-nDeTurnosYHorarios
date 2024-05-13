@@ -10,17 +10,25 @@ const api = axios.create({
     baseURL: API_ENDPOINT,
 });
 
+
+
 const getToken = async () => {
-    const response = await axiosForTokenRetrieval.post('/auth', {
-        "username": process.env.ADMIN_EMAIL,
-        "password": process.env.ADMIN_PASSWORD
-    }, {
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    });
-    console.log(`${response.data.token}`);
-    return response.data.token;
+    console.log(`Using API endpoint: ${API_ENDPOINT}`);
+    try {
+        const response = await axiosForTokenRetrieval.post('/auth', {
+            "username": process.env.ADMIN_EMAIL,
+            "password": process.env.ADMIN_PASSWORD
+        }, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        });
+        console.log(`Token retrieved: ${response.data.token}`);
+        return response.data.token;
+    } catch (error) {
+        console.error('Error retrieving token:', error);
+        throw error;
+    }
 };
 
 api.interceptors.request.use(async (config) => {

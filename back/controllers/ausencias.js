@@ -40,8 +40,19 @@ const createAusencia = async (req, res) => {
     }
 }
 
+const deleteAusencia = async (req, res) => {
+    const {id} = req.params;
+    try {
+        await Ausencia.findByIdAndDelete(id);
+        res.status(200).json({ok: true});
+    } catch (error) {
+        res.status(500).json({ok: false, msg: 'Error deleting ausencia'});
+    }
+}
+
 module.exports = {
     getAusencias,
     getAusencia,
-    createAusencia
+    createAusencia,
+    deleteAusencia
 }

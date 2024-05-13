@@ -6,7 +6,7 @@ const { validateJWT } = require('../middlewares/validate-JWT');
 const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 
-const {getAusencias, getAusencia, createAusencia} = require('../controllers/ausencias');
+const {getAusencias, getAusencia, createAusencia, deleteAusencia} = require('../controllers/ausencias');
 
 router.use(validateJWT);
 
@@ -14,6 +14,8 @@ router.use(validateJWT);
 router.get('/all/:employeeId', validateAdmin, getAusencias);
 
 router.get('/:id', validateAdmin, getAusencia);
+
+router.delete('/:id', validateAdmin, deleteAusencia);
 
 router.post(
     '/new', 
