@@ -1,6 +1,6 @@
 const {api} = require('../api/api');
 const { sendMail } = require('../helpers/sendMail');
-const RegistroTrabajo = require('../models/RegistroTrabajo'); // Import the model
+const EventoTrabajo = require('../models/EventoTrabajo'); // Import the model
 const mandatoryRest = require('../config/config').legislacion.minHorasDescansoIninterrumpido;
 const workEvents = require('../config/config').workEvents;
 

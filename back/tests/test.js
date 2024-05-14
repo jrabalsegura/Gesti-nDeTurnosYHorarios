@@ -1252,6 +1252,7 @@ describe("Test suitcase", () => {
 
     describe("checkMandatoryRest Function", () => {
         let employeeId;
+        let prevRegistroId;
         let registroId;
 
         // Setup: Create an employee and work records
@@ -1265,13 +1266,20 @@ describe("Test suitcase", () => {
             });
             employeeId = employeeResponse.body.employee._id;
 
+            const prevRegistroResponse = await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: new Date(new Date().getTime() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
+            });
+            prevRegistroId = prevRegistroResponse.body.evento._id;
+
             // Create work records for the employee
             const registroResponse = await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
                 employeeId,
                 type: 'checkout',
-                date: new Date(new Date().getTime() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
+                date: new Date(new Date().getTime() - 4 * 60 * 60 * 1000).toISOString() // 4 hours ago
             });
-            registroId = registroResponse.body.registro._id;
+            registroId = registroResponse.body.evento._id;
 
         });
 
@@ -1282,6 +1290,9 @@ describe("Test suitcase", () => {
             }
             if (registroId) {
                 await request(app).delete(`/registrosTrabajo/${registroId}`).set('x-token', token);
+            }
+            if (prevRegistroId) {
+                await request(app).delete(`/eventosTrabajo/${prevRegistroId}`).set('x-token', token);
             }
         });
 
