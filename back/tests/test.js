@@ -1233,7 +1233,8 @@ describe("Test suitcase", () => {
             // Update the holiday to end today
             await request(app).put(`/holidays/${holidayId}`).set('x-token', token).send({
                 startDate: new Date().toISOString(),
-                endDate: new Date().toISOString()
+                endDate: new Date().toISOString(),
+                employeeId
             });
 
             await checkHolidays();
