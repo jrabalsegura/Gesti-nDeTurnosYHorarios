@@ -1,5 +1,4 @@
 const {api} = require('../api/api');
-const Employee = require('../models/Employee');
 
 const checkHolidays = async () => {
   try {
@@ -11,8 +10,7 @@ const checkHolidays = async () => {
     if (response.data.holidays.length > 0) {
         //For each holiday, get the user and change its status tu onHolidays
         response.data.holidays.forEach(async (holiday) => {
-            const employee = await Employee.findById(holiday.employeeId);
-            await api.post(`/employees/${employee._id}/changeOnHolidays`);
+            await api.post(`/employees/${holiday.employeeId}/changeOnHolidays`);
         });
     }
 
@@ -23,8 +21,7 @@ const checkHolidays = async () => {
     if(responseHolidaysEnd.data.holidays.length > 0) {
         //For each holiday, get the user and change its status tu onHolidays
         responseHolidaysEnd.data.holidays.forEach(async (holiday) => {
-            const employee = await Employee.findById(holiday.employeeId);
-            await api.post(`/employees/${employee._id}/changeOnHolidays`);
+            await api.post(`/employees/${holiday.employeeId}/changeOnHolidays`);
         });
     }
   } catch (error) {
