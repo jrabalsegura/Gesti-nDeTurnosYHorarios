@@ -44,6 +44,7 @@ const createAusencia = async (req, res) => {
 
         res.status(200).json({ok: true, ausencia, notification});
     } catch (error) {
+        console.log(error);
         res.status(500).json({ok: false, msg: 'Error creating ausencia', error});
     }
 }
