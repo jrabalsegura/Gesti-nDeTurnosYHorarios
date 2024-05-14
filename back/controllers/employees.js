@@ -214,18 +214,21 @@ const clearHoursAndHolidays = async (req, res) => {
     const {id} = req.params;
 
     try {
-        console.log(id);
+        console.log(`Attempting to clear hours and holidays for employee ID: ${id}`);
         const employee = await Employee.findById(id);
         if (!employee) {
+            console.error(`Employee not found with ID: ${id}`);
             return res.status(404).json({ok: false, msg: 'Employee not found'});
         }
 
         employee.extraHours = 0;
         employee.holidays = 0;
         await employee.save();
+        console.log(`Successfully cleared hours and holidays for employee ID: ${id}`);
         return res.status(200).json({ok: true, employee});
     } catch (error) {
-        return res.status(500).json({ok: false, msg: 'Error clearing hours and holidays'});
+        console.error(`Error clearing hours and holidays for employee ID: ${id}`, error);
+        return res.status(500).json({ok: false, msg: 'Error clearing hours and holidays', error: error.message});
     }
 }
 
