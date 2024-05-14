@@ -10,8 +10,8 @@ const checkMandatoryRest = async () => {
     const oneWeekAgo = new Date(new Date().setDate(new Date().getDate() - 7));
     const registros = await RegistroTrabajo.find({ date: { $gte: oneWeekAgo } }).sort({ employeeId: 1, date: 1 });
 
-    const employees = await api.get('/employees/');
-    console.log(employees);
+    const response = await api.get('/employees/');
+    const employees = response.data.employees;
     for (const employee of employees) {
         const employeeRegistros = registros.filter(registro => registro.employeeId.toString() === employee._id);
         let hasLongEnoughRest = false;
