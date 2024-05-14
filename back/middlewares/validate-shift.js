@@ -8,14 +8,16 @@ const validateShift = async (req, res, next) => {
 
   //Get id from params and delete it first
   const { id } = req.params;
-  try {
-    await Shift.findByIdAndDelete(id);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      ok: false,
-      msg: 'Server error'
-    });
+  if (id) {
+      try {
+        await Shift.findByIdAndDelete(id);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        ok: false,
+        msg: 'Server error'
+      });
+    }
   }
 
   try {
