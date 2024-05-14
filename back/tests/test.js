@@ -1126,6 +1126,7 @@ describe("Test suitcase", () => {
     describe("checkAsistencia Function", () => {
         let employeeId;
         let shiftId;
+        let eventId;
 
         // Setup: Create an employee and a shift
         beforeAll(async () => {
@@ -1138,7 +1139,7 @@ describe("Test suitcase", () => {
                 date: new Date().toISOString()
             });
             employeeId = employeeResponse.body.employee._id;
-
+            console.log(employeeId);
             const shiftResponse = await request(app).post('/shifts/new').set('x-token', token).send({
                 type: 'morning',
                 employeeId,
@@ -1156,6 +1157,9 @@ describe("Test suitcase", () => {
             if (shiftId) {
                 await request(app).delete(`/shifts/${shiftId}`).set('x-token', token);
             }
+            if (eventId) {
+                await request(app).delete(`/eventosTrabajo/${eventId}`).set('x-token', token);
+            }
         });
 
         it("should detect an employee who did not check in after the first hour of the shift", async () => {
@@ -1166,11 +1170,13 @@ describe("Test suitcase", () => {
 
         it("should not detect any absence if all employees checked in", async () => {
             // Create a check-in event for the employee
-            await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
+            console.log(employeeId)
+            const response = await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
                 employeeId,
                 type: 'checkin',
                 date: new Date().toISOString()
             });
+            eventId = response.body.evento._id;
 
             const ausencia = await checkAsistencia();
 
