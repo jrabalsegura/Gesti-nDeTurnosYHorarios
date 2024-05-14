@@ -3,6 +3,8 @@ let { app, stopApp } = require('../index');
 
 const { checkAsistencia } = require('../cronjobs/checkAsistencia');
 const { checkHolidays } = require('../cronjobs/checkHolidays');
+const { deletePastShifts } = require('../cronjobs/deletePastShifts');
+const { clearHoursAndHolidays } = require('../cronjobs/clearHoursAndHolidays');
 
 describe("Test suitcase", () => {
     let token;
@@ -1245,9 +1247,109 @@ describe("Test suitcase", () => {
 
     });
 
+    describe("deletePastShifts Function", () => {
+        let shiftId;
+        let employeeId;
+    
+        // Setup: Create a shift with a past end date
+        beforeAll(async () => {
 
+            const employeeResponse = await request(app).post('/employees/new').set('x-token', token).send({
+                username: 'testShiftUser',
+                password: 'testPass123',
+                name: 'Test Shift User',
+                date: new Date().toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+    
+            const shiftResponse = await request(app).post('/shifts/new').set('x-token', token).send({
+                type: 'morning',
+                employeeId, // Use a valid employee ID
+                start: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+                end: new Date(new Date().getTime() - 6 * 24 * 60 * 60 * 1000).toISOString() // 6 days ago
+            });
+            shiftId = shiftResponse.body.shift._id;
+        });
+    
+        // Cleanup: Delete the created shift if it still exists
+        afterAll(async () => {
+            if (shiftId) {
+                await request(app).delete(`/shifts/${shiftId}`).set('x-token', token);
+            }
+            if (employeeId) {
+                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            }
+        });
+    
+        it("should delete past shifts", async () => {
+            const responseBefore = await request(app).get(`/shifts/${employeeId}`).set('x-token', token);
+            expect(responseBefore.status).toBe(200);
+            expect(responseBefore.body.shifts.length).toBe(1);
 
+            await deletePastShifts();
+    
+            const response = await request(app).get(`/shifts/${employeeId}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.shifts.length).toBe(0);
+        });
+    
+    });
 
+    describe("clearHoursAndHolidays Function", () => {
+        let employeeId;
+    
+        // Setup: Create an employee
+        beforeAll(async () => {
+    
+            const employeeResponse = await request(app).post('/employees/new').set('x-token', token).send({
+                username: 'testClearUser',
+                password: 'testPass123',
+                name: 'Test Clear User',
+                date: new Date().toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+    
+        // Cleanup: Delete the created employee
+        afterAll(async () => {
+            if (employeeId) {
+                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            }
+        });
+    
+        it("should clear extra hours for the employee", async () => {
+            //Add extra hours
+            let response = await request(app).post(`/employees/${employeeId}/extraHoras`).set('x-token', token).send({
+                hours: 8
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.body.employee.extraHours).toBe(8);
+
+            await clearHoursAndHolidays();
+    
+            response = await request(app).get(`/employees/${employeeId}/extraHoras`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.employee.extraHours).toBe(0);
+        });
+
+        it("should clear holidays for the employee", async () => {
+            //Add extra hours
+            let response = await request(app).post(`/employees/${employeeId}/holidays`).set('x-token', token).send({
+                days: 8
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.body.employee.holidays).toBe(8);
+
+            await clearHoursAndHolidays();
+    
+            response = await request(app).get(`/employees/${employeeId}/holidays`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.employee.holidays).toBe(0);
+        });
+    
+    });
 
     
 
