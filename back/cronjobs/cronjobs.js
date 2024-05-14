@@ -4,7 +4,6 @@ const {checkAsistencia} = require('./checkAsistencia');
 const {deletePastShifts} = require('./deletePastShifts');
 const {shifts} = require('../config/config');
 const {clearHoursAndHolidays} = require('./clearHoursAndHolidays');
-const {checkMandatoryRest} = require('./checkMandatoryRest');
 
 //Check holidays every day at 07:00, check if one start or end today
 Cron('0 7 * * *', () => checkHolidays());
@@ -25,15 +24,6 @@ Cron('0 7 * * *', () => deletePastShifts());
 // Run once a year, the 1st of january at 07:00
 Cron('0 7 1 1 *', () => clearHoursAndHolidays());
 
-// Run once a week, Monday at 07:00
-Cron('0 7 * * 1', () => checkMandatoryRest());
-
-//Trial
-//Cron('* * * * *', () => console.log('Server is alive'));
-//Cron('20 17 * * *', () => console.log('Server is alive, 17:20'));
-
-//Trial api
-//Cron(`35 17 * * *`, () => checkAsistencia());
 
 
 

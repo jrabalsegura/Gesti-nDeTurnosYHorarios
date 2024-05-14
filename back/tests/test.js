@@ -3,7 +3,6 @@ let { app, stopApp } = require('../index');
 
 const { checkAsistencia } = require('../cronjobs/checkAsistencia');
 const { checkHolidays } = require('../cronjobs/checkHolidays');
-const { checkMandatoryRest } = require('../cronjobs/checkMandatoryRest');
 
 describe("Test suitcase", () => {
     let token;
@@ -1249,69 +1248,6 @@ describe("Test suitcase", () => {
 
 
 
-
-    describe("checkMandatoryRest Function", () => {
-        let employeeId;
-        let prevRegistroId;
-        let registroId;
-
-        // Setup: Create an employee and work records
-        beforeAll(async () => {
-
-            const employeeResponse = await request(app).post('/employees/new').set('x-token', token).send({
-                username: 'testRestUser',
-                password: 'testPass123',
-                name: 'Test Rest User',
-                date: new Date().toISOString()
-            });
-            employeeId = employeeResponse.body.employee._id;
-
-            // Create work records for the employee
-            const registroResponse = await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
-                employeeId,
-                hours: 8,
-                date: new Date(new Date().getTime() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
-            });
-            registroId = registroResponse.body.registro._id;
-
-            const prevRegistroResponse = await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
-                employeeId,
-                hours: 8,
-                date: new Date(new Date().getTime() - 7 * 60 * 60 * 1000).toISOString() // 12 hours ago
-            });
-            prevRegistroId = prevRegistroResponse.body.registro._id;
-
-        });
-
-        // Cleanup: Delete the employee and the created work records
-        afterAll(async () => {
-            if (employeeId) {
-                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
-            }
-            if (registroId) {
-                await request(app).delete(`/registrosTrabajo/${registroId}`).set('x-token', token);
-            }
-            if (prevRegistroId) {
-                await request(app).delete(`/eventosTrabajo/${prevRegistroId}`).set('x-token', token);
-            }
-        });
-
-        it("should detect employees who did not have a mandatory rest period", async () => {
-
-            const alerta = await checkMandatoryRest();
-
-            expect(alerta).toBe(true);
-        });
-
-        it("should not detect an alert if the employee had a mandatory rest period", async () => {
-            await request(app).delete(`/eventosTrabajo/${registroId}`).set('x-token', token);
-            registroId = null;
-            const alerta = await checkMandatoryRest();
-
-            expect(alerta).toBe(false);
-        });
-
-    });
 
     
 
