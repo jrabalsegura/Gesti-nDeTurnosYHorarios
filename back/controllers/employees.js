@@ -214,6 +214,7 @@ const clearHoursAndHolidays = async (req, res) => {
     const {id} = req.params;
 
     try {
+        console.log(id);
         const employee = await Employee.findById(id);
         if (!employee) {
             return res.status(404).json({ok: false, msg: 'Employee not found'});
