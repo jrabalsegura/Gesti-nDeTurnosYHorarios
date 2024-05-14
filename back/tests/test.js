@@ -1193,6 +1193,7 @@ describe("Test suitcase", () => {
     describe("checkHolidays Function", () => {
         let employeeId;
         let holidayId;
+        let endingHolidayId;
 
         // Setup: Create an employee and a holiday
         beforeAll(async () => {
@@ -1211,6 +1212,8 @@ describe("Test suitcase", () => {
                 endDate: new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toISOString() // +7 days
             });
             holidayId = holidayResponse.body.holiday._id;
+
+            
         });
 
         // Cleanup: Delete the employee and the created holiday
@@ -1221,27 +1224,38 @@ describe("Test suitcase", () => {
             if (holidayId) {
                 await request(app).delete(`/holidays/${holidayId}`).set('x-token', token);
             }
+            if (endingHolidayId) {
+                await request(app).delete(`/holidays/${endingHolidayId}`).set('x-token', token);
+            }
         });
 
         it("should update employee status to onHolidays for holidays starting today", async () => {
             
+            let employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
+            expect(employeeResponse.body.onHolidays).toBe(false);
+            
             await checkHolidays();
 
-            const employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
+            employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
             expect(employeeResponse.body.onHolidays).toBe(true);
         });
 
         it("should update employee status to not onHolidays for holidays ending today", async () => {
-            // Update the holiday to end today
-            await request(app).put(`/holidays/${holidayId}`).set('x-token', token).send({
-                startDate: new Date().toISOString(),
-                endDate: new Date().toISOString(),
-                employeeId
+            
+
+            let employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
+            expect(employeeResponse.body.onHolidays).toBe(true);
+
+            const endingHolidayResponse = await request(app).post('/holidays/new').set('x-token', token).send({
+                employeeId,
+                startDate: new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString(), // -7 days
+                endDate: new Date().toISOString() // today
             });
+            endingHolidayId = endingHolidayResponse.body.holiday._id;
 
             await checkHolidays();
 
-            const employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
+            employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
             expect(employeeResponse.body.onHolidays).toBe(false);
         });
 
@@ -1319,7 +1333,7 @@ describe("Test suitcase", () => {
     
         it("should clear extra hours for the employee", async () => {
             //Add extra hours
-            let response = await request(app).post(`/employees/${employeeId}/extraHoras`).set('x-token', token).send({
+            let response = await request(app).post(`/employees/${employeeId}/extraHours`).set('x-token', token).send({
                 hours: 8
             });
             console.log(employeeId)
@@ -1328,7 +1342,7 @@ describe("Test suitcase", () => {
 
             await clearHoursAndHolidays();
     
-            response = await request(app).get(`/employees/${employeeId}/extraHoras`).set('x-token', token);
+            response = await request(app).get(`/employees/${employeeId}/extraHours`).set('x-token', token);
             expect(response.status).toBe(200);
             expect(response.body.extraHours).toBe(0);
         });
