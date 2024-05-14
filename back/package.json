@@ -8,6 +8,9 @@
     "start": "node index.js",
     "test": "cross-env NODE_ENV=test jest --testTimeout=5000"
   },
+  "engines": {
+    "node": "20.11.1"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

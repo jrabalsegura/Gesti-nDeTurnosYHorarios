@@ -26,6 +26,12 @@ const checkAsistencia = async () => {
         employeeIds.forEach(employeeId => {
             if (!checkInsIds.has(employeeId)) {
                 ausencia = true;
+                api.post(`/ausencias/new`, {
+                    employeeId,
+                    type: 'ausencia',
+                    motivo: 'Falta de asistencia',
+                    date: new Date().toISOString()
+                });
                 if (process.env.NODE_ENV !== 'test') {
                     sendMail('Falta de asistencia', `El empleado ${employeeId} no ha realizado el checkin después de la primera hora del turno`);
                 }
