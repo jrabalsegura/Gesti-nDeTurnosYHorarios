@@ -5,6 +5,8 @@ const {sendMail} = require('../helpers/sendMail');
 const checkAsistencia = async () => {
     console.log('Checking asistencia');
 
+    const ausencia = false;
+
     try {
         // Get the shifts that started in the past hour
         const shiftsResponse = await api.get('/shifts/justStarted');
@@ -24,7 +26,11 @@ const checkAsistencia = async () => {
         employeeIds.forEach(employeeId => {
             console.log(employeeId)
             if (!checkInsIds.has(employeeId)) {
-                sendMail('Falta de asistencia', `El empleado ${employeeId} no ha realizado el checkin después de la primera hora del turno`);
+                ausencia = true;
+                if (process.env.NODE_ENV !== 'test') {
+                    sendMail('Falta de asistencia', `El empleado ${employeeId} no ha realizado el checkin después de la primera hora del turno`);
+                }
+                
                 console.log(`The employee ${employeeId} has not checked in after the first hour of the shift`);
             }
         });
@@ -33,6 +39,7 @@ const checkAsistencia = async () => {
         // Optionally, send an email or alert to notify an admin or developer of the error
         // sendMail('Error Checking Asistencia', `An error occurred while checking asistencia: ${error.message}`);
     }
+    return ausencia;
 }
 
 module.exports = {

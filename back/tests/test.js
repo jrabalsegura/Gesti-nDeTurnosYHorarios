@@ -1,6 +1,9 @@
 const request = require('supertest');
 let { app, stopApp } = require('../index');
-// Ensure this exports your Express app
+
+const { checkAsistencia } = require('../cronjobs/checkAsistencia');
+const {api} = require('../api/api');
+const {sendMail} = require('../helpers/sendMail');
 
 describe("Test suitcase", () => {
     let token;
@@ -1118,5 +1121,12 @@ describe("Test suitcase", () => {
             expect(response.body.msg).toBe('Error al eliminar el turno');
         });
     });
+
+    //Testing cronjob helpers
+
+    
+
+    
+
 });
 
