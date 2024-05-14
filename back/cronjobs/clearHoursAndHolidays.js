@@ -6,14 +6,14 @@ const clearHoursAndHolidays = async () => {
     const response = await api.get('/employees');
     const employees = response.data.employees;
     console.log(employees)
-    employees.forEach(async (employee) => {
-        console.log(employee._id);
+    for (const employee of employees) {
         try {
             await api.post(`/employees/${employee._id}/clear`);
         } catch (error) {
             console.error(error);
-        }
-    });
+     
+       }
+    }
 
 }
 

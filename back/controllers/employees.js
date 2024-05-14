@@ -217,7 +217,7 @@ const clearHoursAndHolidays = async (req, res) => {
 
     try {
         console.log(`Attempting to clear hours and holidays for employee ID: ${id}`);
-        const employee = await Employee.findById(ObjectId(id));
+        const employee = await Employee.findById(id);
         if (!employee) {
             console.error(`Employee not found with ID: ${id}`);
             return res.status(404).json({ ok: false, msg: 'Employee not found' });
