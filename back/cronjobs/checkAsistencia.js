@@ -23,7 +23,7 @@ const checkAsistencia = async () => {
         const checkInsIds = new Set(checkIns.map(event => event.employeeId));
 
         // Loop all the employeeIds and check if present in checkInsIds
-        employeeIds.forEach(async employeeId => {
+        await employeeIds.forEach(async employeeId => {
             if (!checkInsIds.has(employeeId)) {
 
                 //Get user name
