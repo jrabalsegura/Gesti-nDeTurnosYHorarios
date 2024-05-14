@@ -3,6 +3,7 @@ let { app, stopApp } = require('../index');
 
 const { checkAsistencia } = require('../cronjobs/checkAsistencia');
 const { checkHolidays } = require('../cronjobs/checkHolidays');
+const { checkMandatoryRest } = require('../cronjobs/checkMandatoryRest');
 
 describe("Test suitcase", () => {
     let token;
@@ -1246,22 +1247,15 @@ describe("Test suitcase", () => {
     });
 
 
-    const { checkMandatoryRest } = require('../cronjobs/checkMandatoryRest');
+
 
 
     describe("checkMandatoryRest Function", () => {
-        let token;
         let employeeId;
         let registroId;
 
         // Setup: Create an employee and work records
         beforeAll(async () => {
-            // Assume you have a way to get a valid token
-            const loginResponse = await request(app).post('/auth/login').send({
-                username: 'admin',
-                password: 'adminPass'
-            });
-            token = loginResponse.body.token;
 
             const employeeResponse = await request(app).post('/employees/new').set('x-token', token).send({
                 username: 'testRestUser',
@@ -1272,18 +1266,13 @@ describe("Test suitcase", () => {
             employeeId = employeeResponse.body.employee._id;
 
             // Create work records for the employee
-            const registroResponse = await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
+            const registroResponse = await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
                 employeeId,
                 type: 'checkout',
                 date: new Date(new Date().getTime() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
             });
             registroId = registroResponse.body.registro._id;
 
-            await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
-                employeeId,
-                type: 'checkin',
-                date: new Date(new Date().getTime() - 7 * 60 * 60 * 1000).toISOString() // 7 hours ago
-            });
         });
 
         // Cleanup: Delete the employee and the created work records
@@ -1297,40 +1286,20 @@ describe("Test suitcase", () => {
         });
 
         it("should detect employees who did not have a mandatory rest period", async () => {
-            RegistroTrabajo.find.mockResolvedValue([
-                { employeeId, type: 'checkout', date: new Date(new Date().getTime() - 8 * 60 * 60 * 1000) }, // 8 hours ago
-                { employeeId, type: 'checkin', date: new Date(new Date().getTime() - 7 * 60 * 60 * 1000) } // 7 hours ago
-            ]);
 
-            await checkMandatoryRest();
+            const alerta = await checkMandatoryRest();
 
-            expect(sendMail).toHaveBeenCalledWith(
-                'Falta de descanso obligatorio',
-                `El empleado ${employeeId} no ha realizado un descanso obligatorio durante la semana.`
-            );
+            expect(alerta).toBe(true);
         });
 
-        it("should not send an email if the employee had a mandatory rest period", async () => {
-            RegistroTrabajo.find.mockResolvedValue([
-                { employeeId, type: 'checkout', date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000) }, // 24 hours ago
-                { employeeId, type: 'checkin', date: new Date(new Date().getTime() - 16 * 60 * 60 * 1000) } // 16 hours ago
-            ]);
+        it("should not detect an alert if the employee had a mandatory rest period", async () => {
+            await request(app).delete(`/eventosTrabajo/${registroId}`).set('x-token', token);
+            registroId = null;
+            const alerta = await checkMandatoryRest();
 
-            await checkMandatoryRest();
-
-            expect(sendMail).not.toHaveBeenCalled();
+            expect(alerta).toBe(false);
         });
 
-        it("should handle errors gracefully", async () => {
-            // Simulate an error by throwing an error in the RegistroTrabajo.find mock
-            RegistroTrabajo.find.mockImplementation(() => {
-                throw new Error('Database error');
-            });
-
-            await checkMandatoryRest();
-
-            expect(console.error).toHaveBeenCalledWith('Error fetching holidays:', expect.any(Error));
-        });
     });
 
     

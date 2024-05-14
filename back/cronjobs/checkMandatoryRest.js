@@ -10,7 +10,7 @@ const checkMandatoryRest = async () => {
     let alerta = false;
 
     const oneWeekAgo = new Date(new Date().setDate(new Date().getDate() - 7));
-    const registros = await RegistroTrabajo.find({ date: { $gte: oneWeekAgo } }).sort({ employeeId: 1, date: 1 });
+    const registros = await EventoTrabajo.find({ date: { $gte: oneWeekAgo } }).sort({ employeeId: 1, date: 1 });
 
     const employees = await api.get('/employees');
     for (const employee of employees) {
