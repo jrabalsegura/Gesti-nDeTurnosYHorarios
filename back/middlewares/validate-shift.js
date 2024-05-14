@@ -6,9 +6,11 @@ const { workEvents } = require('../config/config');
 const validateShift = async (req, res, next) => {
   const { employeeId, start, end } = req.body;
 
-  //Get id from params and delete it first
+  //Get id from params and delete it first if its exists
   const { id } = req.params;
-  if (id) {
+
+  //Check if a id is a valid mongoose id
+  if (id && mongoose.Types.ObjectId.isValid(id)) {
       try {
         await Shift.findByIdAndDelete(id);
     } catch (error) {
