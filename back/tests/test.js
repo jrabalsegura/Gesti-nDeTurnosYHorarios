@@ -919,5 +919,204 @@ describe("Test suitcase", () => {
             expect(response.body.msg).toBe('Error deleting registry');
         });
     }); 
+
+    describe("Notificaciones Workflow", () => {
+        let employeeId;
+        let notificationId;
+
+        // Setup: Create an employee
+        beforeAll(async () => {
+            const employeeResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testNotificationUser',
+                password: 'testPass123',
+                name: 'Test Notification User',
+                date: currentDate.toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+
+        // Cleanup: Delete the employee and the created notification
+        afterAll(async () => {
+            if (employeeId) {
+                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            }
+            if (notificationId) {
+                await request(app).delete(`/notificaciones/${notificationId}`).set('x-token', token);
+            }
+        });
+
+        // Test to create a notification successfully
+        it("should create a new notification", async () => {
+            const response = await request(app).post('/notificaciones/new').set('x-token', token).send({
+                type: 'ausencia',
+                employeeId,
+                startDate: currentDate.toISOString(),
+                endDate: new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)).toISOString(), // +1 day
+                name: 'Test Notification',
+                justificante: 'Test Justification'
+            });
+            expect(response.status).toBe(201);
+            expect(response.body.ok).toBe(true);
+            expect(response.body.notification).toBeDefined();
+            notificationId = response.body.notification._id;
+        });
+
+         // Test to get notifications successfully
+         it("should get notifications successfully", async () => {
+            const response = await request(app).get('/notificaciones').set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.ok).toBe(true);
+            expect(response.body.notifications).toBeDefined();
+        });
+
+        // Test to fail getting notifications without admin privileges
+        it("should fail to get notifications without admin privileges", async () => {
+            const userLoginResponse = await request(app).post(`/auth/`).send({
+                username: 'testNotificationUser',
+                password: 'testPass123'
+            });
+            const userToken = userLoginResponse.body.token;
+
+            const response = await request(app).get('/notificaciones').set('x-token', userToken);
+            expect(response.status).toBe(401);
+        });
+
+        // Test to fail creating a notification due to missing required fields
+        it("should fail to create a notification without required fields", async () => {
+            const response = await request(app).post('/notificaciones/new').set('x-token', token).send({
+                type: 'type1',
+                startDate: currentDate.toISOString()
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors).toBeDefined();
+        });
+
+        // Test to delete a notification successfully
+        it("should delete a notification successfully", async () => {
+            const response = await request(app).delete(`/notificaciones/${notificationId}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.ok).toBe(true);
+            notificationId = null;  
+        });
+
+        // Test to fail deleting a notification with invalid ID
+        it("should fail to delete a notification with invalid ID", async () => {
+            const response = await request(app).delete(`/notificaciones/invalid-id`).set('x-token', token);
+            expect(response.status).toBe(500);
+            expect(response.body.msg).toBe('Error deleting notification');
+        });
+    });
+
+
+    describe("Shifts Workflow", () => {
+        let employeeId;
+        let shiftId;
+
+        // Setup: Create an employee and get a valid token
+        beforeAll(async () => {
+            const employeeResponse = await request(app).post(`/employees/new`).set('x-token', token).send({
+                username: 'testShiftUser',
+                password: 'testPass123',
+                name: 'Test Shift User',
+                date: currentDate.toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+        });
+
+        // Cleanup: Delete the employee and the created shift
+        afterAll(async () => {
+            if (employeeId) {
+                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            }
+            if (shiftId) {
+                await request(app).delete(`/shifts/${shiftId}`).set('x-token', token);
+            }
+        });
+
+        // Test to create a shift successfully
+        it("should create a new shift", async () => {
+            const response = await request(app).post('/shifts/new').set('x-token', token).send({
+                type: 'morning',
+                employeeId,
+                start: currentDate.toISOString(),
+                end: new Date(currentDate.getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString()
+            });
+            expect(response.status).toBe(201);
+            expect(response.body.ok).toBe(true);
+            expect(response.body.shift).toBeDefined();
+            shiftId = response.body.shift._id;
+        });
+
+        // Test to get all shifts successfully
+        it("should get all shifts successfully", async () => {
+            const response = await request(app).get('/shifts').set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.shifts).toBeDefined();
+        });
+
+        // Test to get shifts by employee ID successfully
+        it("should get shifts by employee ID successfully", async () => {
+            const response = await request(app).get(`/shifts/${employeeId}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.shifts).toBeDefined();
+        });
+
+        // Test to get just started shifts successfully
+        it("should get just started shifts successfully", async () => {
+            const response = await request(app).get('/shifts/justStarted').set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.shifts).toBeDefined();
+        });
+
+        // Test to fail creating a shift due to missing required fields
+        it("should fail to create a shift without required fields", async () => {
+            const response = await request(app).post('/shifts/new').set('x-token', token).send({
+                type: 'morning',
+                start: currentDate.toISOString()
+            });
+            expect(response.status).toBe(400);
+            expect(response.body.errors).toBeDefined();
+        });
+
+        // Test to update a shift successfully
+        it("should update a shift successfully", async () => {
+            const response = await request(app).put(`/shifts/${shiftId}`).set('x-token', token).send({
+                type: 'afternoon',
+                employeeId,
+                start: currentDate.toISOString(),
+                end: new Date(currentDate.getTime() + (8 * 60 * 60 * 1000)).toISOString() // +8 hours
+            });
+            expect(response.status).toBe(200);
+            expect(response.body.ok).toBe(true);
+            expect(response.body.shift).toBeDefined();
+        });
+
+        // Test to fail updating a shift with invalid ID
+        it("should fail to update a shift with invalid ID", async () => {
+            const response = await request(app).put(`/shifts/invalid-id`).set('x-token', token).send({
+                type: 'afternoon',
+                employeeId,
+                start: currentDate.toISOString(),
+                end: new Date(currentDate.getTime() + (8 * 60 * 60 * 1000)).toISOString() // +8 hours
+            });
+            expect(response.status).toBe(500);
+            expect(response.body.msg).toBe('Error al actualizar el turno');
+        });
+    
+        // Test to delete a shift successfully
+        it("should delete a shift successfully", async () => {
+            const response = await request(app).delete(`/shifts/${shiftId}`).set('x-token', token);
+            expect(response.status).toBe(200);
+            expect(response.body.ok).toBe(true);
+            shiftId = null;
+        });
+    
+        // Test to fail deleting a shift with invalid ID
+        it("should fail to delete a shift with invalid ID", async () => {
+            const response = await request(app).delete(`/shifts/invalid-id`).set('x-token', token);
+            expect(response.status).toBe(500);
+            expect(response.body.msg).toBe('Error al eliminar el turno');
+        });
+    });
 });
 

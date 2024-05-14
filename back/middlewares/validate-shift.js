@@ -6,6 +6,18 @@ const { workEvents } = require('../config/config');
 const validateShift = async (req, res, next) => {
   const { employeeId, start, end } = req.body;
 
+  //Get id from params and delete it first
+  const { id } = req.params;
+  try {
+    await Shift.findByIdAndDelete(id);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Server error'
+    });
+  }
+
   try {
     // Check if the employee already has a shift assigned in any of those days
     const overlappingShift = await Shift.findOne({
