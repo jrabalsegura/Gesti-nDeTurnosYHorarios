@@ -5,7 +5,7 @@ const {sendMail} = require('../helpers/sendMail');
 const checkAsistencia = async () => {
     console.log('Checking asistencia');
 
-    const ausencia = false;
+    let ausencia = false;
 
     try {
         // Get the shifts that started in the past hour

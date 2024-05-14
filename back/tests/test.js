@@ -2,8 +2,6 @@ const request = require('supertest');
 let { app, stopApp } = require('../index');
 
 const { checkAsistencia } = require('../cronjobs/checkAsistencia');
-const {api} = require('../api/api');
-const {sendMail} = require('../helpers/sendMail');
 
 describe("Test suitcase", () => {
     let token;
@@ -1124,7 +1122,62 @@ describe("Test suitcase", () => {
 
     //Testing cronjob helpers
 
-    
+
+    describe("checkAsistencia Function", () => {
+        let employeeId;
+        let shiftId;
+
+        // Setup: Create an employee and a shift
+        beforeAll(async () => {
+            
+
+            const employeeResponse = await request(app).post('/employees/new').set('x-token', token).send({
+                username: 'testShiftUser',
+                password: 'testPass123',
+                name: 'Test Shift User',
+                date: new Date().toISOString()
+            });
+            employeeId = employeeResponse.body.employee._id;
+
+            const shiftResponse = await request(app).post('/shifts/new').set('x-token', token).send({
+                type: 'morning',
+                employeeId,
+                start: new Date(new Date().getTime() - 45 * 60 * 1000).toISOString(), // started 45 minutes ago
+                end: new Date(new Date().getTime() + (8 * 60 * 60 * 1000)).toISOString() // +8 hours
+            });
+            shiftId = shiftResponse.body.shift._id;
+        });
+
+        // Cleanup: Delete the employee and the created shift
+        afterAll(async () => {
+            if (employeeId) {
+                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            }
+            if (shiftId) {
+                await request(app).delete(`/shifts/${shiftId}`).set('x-token', token);
+            }
+        });
+
+        it("should detect an employee who did not check in after the first hour of the shift", async () => {
+            const ausencia = await checkAsistencia();
+
+            expect(ausencia).toBe(true);
+        });
+
+        it("should not detect any absence if all employees checked in", async () => {
+            // Create a check-in event for the employee
+            await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
+                employeeId,
+                type: 'checkin',
+                date: new Date().toISOString()
+            });
+
+            const ausencia = await checkAsistencia();
+
+            expect(ausencia).toBe(false);
+        });
+
+    });
 
     
 
