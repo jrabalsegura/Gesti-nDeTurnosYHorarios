@@ -22,7 +22,11 @@ const checkHolidays = async () => {
         //For each holiday, get the user and change its status tu onHolidays
         responseHolidaysEnd.data.holidays.forEach(async (holiday) => {
             console.log(holiday);
-            await api.post(`/employees/${holiday.employeeId}/libre`);
+            try {
+                await api.post(`/employees/${holiday.employeeId}/libre`);
+            } catch (error) {
+                console.error('Error updating employee:', error);
+            }
         });
     }
   } catch (error) {
