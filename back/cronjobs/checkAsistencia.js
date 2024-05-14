@@ -11,25 +11,19 @@ const checkAsistencia = async () => {
         // Get the shifts that started in the past hour
         const shiftsResponse = await api.get('/shifts/justStarted');
         const shifts = shiftsResponse.data.shifts;
-        console.log(shifts);
         
         // Get employee id from each shift
         const employeeIds = shifts.map(shift => shift.employeeId);
-        console.log(employeeIds);
 
         // Check if the employee has checked in after the first hour of every shift
         const eventsResponse = await api.get('/eventosTrabajo/last');
-        console.log(eventsResponse.data.events);
 
         const checkIns = eventsResponse.data.events.filter(event => event.type === workEvents.checkin);
-        console.log(checkIns);
 
         const checkInsIds = new Set(checkIns.map(event => event.employeeId));
-        console.log(checkInsIds);
 
         // Loop all the employeeIds and check if present in checkInsIds
         employeeIds.forEach(employeeId => {
-            console.log(employeeId)
             if (!checkInsIds.has(employeeId)) {
                 ausencia = true;
                 if (process.env.NODE_ENV !== 'test') {

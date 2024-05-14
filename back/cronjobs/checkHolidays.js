@@ -1,4 +1,5 @@
 const {api} = require('../api/api');
+const Employee = require('../models/Employee');
 
 const checkHolidays = async () => {
   try {

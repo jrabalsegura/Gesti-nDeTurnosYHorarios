@@ -14,18 +14,14 @@ const getShifts = async (req, res) => {
 }
 
 const getJustStartedShifts = async (req, res) => {
-    console.log('Inside getJustStartedShifts');
     
     const oneHourAgo = new Date(new Date().getTime() - 60 * 60 * 1000);
     const now = new Date();
-    console.log('Current time:', now);
-    console.log('One hour ago:', oneHourAgo);
 
     const shifts = await Shift.find({
         start: { $gte: oneHourAgo, $lt: now }
     });
 
-    console.log('Shifts found:', shifts);
 
     res.status(200).json({ shifts });
 }

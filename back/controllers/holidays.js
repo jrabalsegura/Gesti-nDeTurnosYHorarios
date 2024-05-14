@@ -68,10 +68,25 @@ const deleteHoliday = async (req, res) => {
     }
 }
 
+const updateHoliday = async (req, res) => {
+    const {id} = req.params;
+    const {startDate, endDate} = req.body;
+    try {
+        const holiday = await Holiday.findById(id);
+        holiday.startDate = startDate;
+        holiday.endDate = endDate;
+        await holiday.save();
+        res.status(200).json({ok: true, holiday});
+    } catch (error) {
+        res.status(500).json({ok: false, msg: 'Error updating holiday'});
+    }
+}
+
 module.exports = {
     getHolidaysStartToday,
     getHolidaysEndToday,
     createHoliday,
     getHolidays,
-    deleteHoliday
+    deleteHoliday,
+    updateHoliday
 }
