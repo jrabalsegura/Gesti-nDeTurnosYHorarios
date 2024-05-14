@@ -1266,20 +1266,20 @@ describe("Test suitcase", () => {
             });
             employeeId = employeeResponse.body.employee._id;
 
-            const prevRegistroResponse = await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
+            // Create work records for the employee
+            const registroResponse = await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
                 employeeId,
-                type: 'checkin',
+                hours: 8,
                 date: new Date(new Date().getTime() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
             });
-            prevRegistroId = prevRegistroResponse.body.evento._id;
+            registroId = registroResponse.body.registro._id;
 
-            // Create work records for the employee
-            const registroResponse = await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
+            const prevRegistroResponse = await request(app).post('/registrosTrabajo/new').set('x-token', token).send({
                 employeeId,
-                type: 'checkout',
-                date: new Date(new Date().getTime() - 4 * 60 * 60 * 1000).toISOString() // 4 hours ago
+                hours: 8,
+                date: new Date(new Date().getTime() - 7 * 60 * 60 * 1000).toISOString() // 12 hours ago
             });
-            registroId = registroResponse.body.evento._id;
+            prevRegistroId = prevRegistroResponse.body.registro._id;
 
         });
 
