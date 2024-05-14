@@ -55,6 +55,7 @@ describe("Test suitcase", () => {
                 employeeId: employeeId,
                 motivo: 'Test absence'
             });
+            console.log(ausenciaResponse);
             ausenciaId = ausenciaResponse.body.ausencia._id;
             notificationId = ausenciaResponse.body.notification._id;
         });
