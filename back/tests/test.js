@@ -1334,7 +1334,7 @@ describe("Test suitcase", () => {
         });
 
         it("should clear holidays for the employee", async () => {
-            //Add extra hours
+            //Add holidays
             let response = await request(app).post(`/employees/${employeeId}/holidays`).set('x-token', token).send({
                 days: 8
             });

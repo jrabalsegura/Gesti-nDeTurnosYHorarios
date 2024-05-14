@@ -6,6 +6,7 @@ const clearHoursAndHolidays = async () => {
     const response = await api.get('/employees');
     const employees = response.data.employees;
     employees.forEach(async (employee) => {
+        console.log(employee._id);
         await api.post(`/employees/${employee._id}/clear`);
     });
 
