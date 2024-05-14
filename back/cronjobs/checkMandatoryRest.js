@@ -7,6 +7,8 @@ const workEvents = require('../config/config').workEvents;
 const checkMandatoryRest = async () => {
     console.log('Checking mandatory rest');
 
+    let alerta = false;
+
     const oneWeekAgo = new Date(new Date().setDate(new Date().getDate() - 7));
     const registros = await RegistroTrabajo.find({ date: { $gte: oneWeekAgo } }).sort({ employeeId: 1, date: 1 });
 
@@ -27,11 +29,16 @@ const checkMandatoryRest = async () => {
         }
 
         if (!hasLongEnoughRest) {
+            alerta = true;
             //TODO: Notify by mail
-            sendMail('Falta de descanso obligatorio', `El empleado ${employee._id} no ha realizado un descanso obligatorio durante la semana.`);
+            if (process.env.NODE_ENV !== 'test') {
+                sendMail('Falta de descanso obligatorio', `El empleado ${employee._id} no ha realizado un descanso obligatorio durante la semana.`);
+            }
             console.log(`Employee ID ${employee._id} did not have a rest period longer than ${mandatoryRest} hours in the past week.`);
         }
     }
+
+    return alerta;
 }
 
 module.exports = { checkMandatoryRest };
