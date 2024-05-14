@@ -1302,9 +1302,9 @@ describe("Test suitcase", () => {
         beforeAll(async () => {
     
             const employeeResponse = await request(app).post('/employees/new').set('x-token', token).send({
-                username: 'testClearUser',
+                username: 'testShiftUser',
                 password: 'testPass123',
-                name: 'Test Clear User',
+                name: 'Test Shift User',
                 date: new Date().toISOString()
             });
             employeeId = employeeResponse.body.employee._id;
@@ -1322,7 +1322,7 @@ describe("Test suitcase", () => {
             let response = await request(app).post(`/employees/${employeeId}/extraHoras`).set('x-token', token).send({
                 hours: 8
             });
-
+            console.log(employeeId)
             expect(response.status).toBe(200);
             expect(response.body.employee.extraHours).toBe(8);
 
