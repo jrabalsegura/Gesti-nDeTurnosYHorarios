@@ -2,6 +2,7 @@ const Shift = require('../models/Shift');
 const EventoTrabajo = require('../models/EventoTrabajo');
 const Holiday = require('../models/Holiday');
 const { workEvents } = require('../config/config');
+const mongoose = require('mongoose');
 
 const validateShift = async (req, res, next) => {
   const { employeeId, start, end } = req.body;
