@@ -1330,7 +1330,7 @@ describe("Test suitcase", () => {
     
             response = await request(app).get(`/employees/${employeeId}/extraHoras`).set('x-token', token);
             expect(response.status).toBe(200);
-            expect(response.body.employee.extraHours).toBe(0);
+            expect(response.body.extraHours).toBe(0);
         });
 
         it("should clear holidays for the employee", async () => {
@@ -1346,7 +1346,7 @@ describe("Test suitcase", () => {
     
             response = await request(app).get(`/employees/${employeeId}/holidays`).set('x-token', token);
             expect(response.status).toBe(200);
-            expect(response.body.employee.holidays).toBe(0);
+            expect(response.body.holidays).toBe(0);
         });
     
     });

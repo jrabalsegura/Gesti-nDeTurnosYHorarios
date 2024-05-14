@@ -222,9 +222,9 @@ const clearHoursAndHolidays = async (req, res) => {
         employee.extraHours = 0;
         employee.holidays = 0;
         await employee.save();
-        res.status(200).json({ok: true, employee});
+        return res.status(200).json({ok: true, employee});
     } catch (error) {
-        res.status(500).json({ok: false, msg: 'Error clearing hours and holidays'});
+        return res.status(500).json({ok: false, msg: 'Error clearing hours and holidays'});
     }
 }
 
