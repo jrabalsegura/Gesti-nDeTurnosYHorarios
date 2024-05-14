@@ -10,7 +10,7 @@ const checkHolidays = async () => {
     if (response.data.holidays.length > 0) {
         //For each holiday, get the user and change its status tu onHolidays
         response.data.holidays.forEach(async (holiday) => {
-            await api.post(`/employees/${holiday.employeeId}/changeOnHolidays`);
+            await api.post(`/employees/${holiday.employeeId}/libre`);
         });
     }
 
@@ -21,7 +21,7 @@ const checkHolidays = async () => {
     if(responseHolidaysEnd.data.holidays.length > 0) {
         //For each holiday, get the user and change its status tu onHolidays
         responseHolidaysEnd.data.holidays.forEach(async (holiday) => {
-            await api.post(`/employees/${holiday.employeeId}/changeOnHolidays`);
+            await api.post(`/employees/${holiday.employeeId}/libre`);
         });
     }
   } catch (error) {

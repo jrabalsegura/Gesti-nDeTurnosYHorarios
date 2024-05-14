@@ -1225,7 +1225,7 @@ describe("Test suitcase", () => {
             
             await checkHolidays();
 
-            const employeeResponse = await request(app).get(`/employees/${employeeId}/holidays`).set('x-token', token);
+            const employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
             expect(employeeResponse.body.onHolidays).toBe(true);
         });
 
@@ -1238,7 +1238,7 @@ describe("Test suitcase", () => {
 
             await checkHolidays();
 
-            const employeeResponse = await request(app).get(`/employees/${employeeId}/holidays`).set('x-token', token);
+            const employeeResponse = await request(app).get(`/employees/${employeeId}/libre`).set('x-token', token);
             expect(employeeResponse.body.onHolidays).toBe(false);
         });
 
