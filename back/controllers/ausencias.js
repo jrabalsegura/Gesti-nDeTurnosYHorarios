@@ -1,5 +1,6 @@
 const Ausencia = require('../models/Ausencia');
 const Notification = require('../models/Notification');
+const Employee = require('../models/Employee');
 
 const getAusencias = async (req, res) => {
 
@@ -23,10 +24,17 @@ const getAusencia = async (req, res) => {
 }
 
 const createAusencia = async (req, res) => {
-    const {date, employeeId, motivo, justificante, name} = req.body;
+    let {date, employeeId, motivo, justificante, name} = req.body;
     try {
         const ausencia = new Ausencia({date, employeeId, motivo, justificante});
         await ausencia.save();
+
+        //If name === undefined
+        if (name === undefined) {
+            const employeeResponse = await Employee.findById(employeeId);
+            const employee = employeeResponse.data.employee;
+            name = employee.name;
+        }
 
         //Create notification for admin
         const type = 'ausencia';

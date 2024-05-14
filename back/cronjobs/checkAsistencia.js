@@ -23,19 +23,15 @@ const checkAsistencia = async () => {
         const checkInsIds = new Set(checkIns.map(event => event.employeeId));
 
         // Loop all the employeeIds and check if present in checkInsIds
-        await employeeIds.forEach(async employeeId => {
+        employeeIds.forEach(employeeId => {
             if (!checkInsIds.has(employeeId)) {
 
-                //Get user name
-                const employeeResponse = await api.get(`/employees/${employeeId}`);
-                const employeeName = employeeResponse.data.employee.name;
                 ausencia = true;
                 api.post(`/ausencias/new`, {
                     employeeId,
                     type: 'ausencia',
                     motivo: 'Falta de asistencia',
-                    date: new Date().toISOString(),
-                    name: employeeName
+                    date: new Date().toISOString()
                 });
                 if (process.env.NODE_ENV !== 'test') {
                     sendMail('Falta de asistencia', `El empleado ${employeeId} no ha realizado el checkin después de la primera hora del turno`);
