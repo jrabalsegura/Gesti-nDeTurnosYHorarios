@@ -1,4 +1,5 @@
 const { createPDF } = require('../helpers/createPDF');
+const { createPDFFiniquito } = require('../helpers/createPDFFiniquito');
 const Nomina = require('../models/Nomina');
 
 const getNominas = async (req, res) => {
@@ -16,6 +17,29 @@ const getNominas = async (req, res) => {
         
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error fetching nominas'});
+    }
+}
+
+const createFiniquito = async (req, res) => {
+    const {employeeId, months, baseSallary, totalVacation, pago} = req.body;
+    let fileName = '';
+
+    try {
+        //Check if NODE_ENV is production
+        if (process.env.NODE_ENV !== 'test') {
+            fileName = await createPDFFiniquito(req.body);
+            console.log(fileName);
+        } else {
+            fileName = 'test.pdf';
+        }
+
+        console.log('Finiquito creado!');
+
+        res.status(200).json({ok: true, fileName});
+    } catch (error) {
+        
+        res.status(500).json({ok: false, msg: 'Database error', error});
+        
     }
 }
 
@@ -65,6 +89,7 @@ const deleteNomina = async (req, res) => {
 module.exports = {
     getNominas,
     createNomina,
-    deleteNomina
+    deleteNomina,
+    createFiniquito
 }
 

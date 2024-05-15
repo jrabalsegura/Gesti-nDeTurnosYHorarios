@@ -6,7 +6,7 @@ const { validateJWT } = require('../middlewares/validate-JWT');
 const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 
-const {getNominas, createNomina, deleteNomina} = require('../controllers/nominas');
+const {getNominas, createNomina, deleteNomina, createFiniquito} = require('../controllers/nominas');
 
 router.use(validateJWT);
 
@@ -28,6 +28,18 @@ router.post('/new', [
     validateFields,
     validateAdmin
 ], createNomina);
+
+router.post('/newFiniquito', [
+    check('employeeId', 'The employeeId is required').isMongoId(),
+    check('baseSallary', 'The sallary is required').isNumeric(),
+    check('months', 'The months are required').isNumeric(),
+    check('totalVacation', 'The total vacation payment is required').isNumeric(),
+    check('pago', 'The payment is required').isNumeric(),
+    validateFields,
+    validateAdmin
+], createFiniquito);
+
+
 
 router.delete('/:id', [
     check('id', 'The id is required').isMongoId(),
