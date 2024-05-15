@@ -25,7 +25,7 @@ const createPDFFiniquito = async (body) => {
   const pagoWidth = doc.getTextWidth(pagoText);
   doc.text(pagoText, (pageWidth - pagoWidth) / 2, 90);
 
-  const fileName = `${employeeName.replace(/\s+/g, '_')}_${spanishMonth}_${year}.pdf`;
+  const fileName = `${employeeName.replace(/\s+/g, '_')}_Finiquito.pdf`;
   const pdfOutput = doc.output('arraybuffer');
 
   // Upload to S3
