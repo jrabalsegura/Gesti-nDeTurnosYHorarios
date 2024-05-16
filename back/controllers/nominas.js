@@ -80,7 +80,7 @@ const createNomina = async (req, res) => {
         }
         
 
-        const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago, fileName});
+        const nomina = new Nomina({employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago, fileName, employeeName: user.name});
         await nomina.save();
 
         console.log('Nomina creada!');
