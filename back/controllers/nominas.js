@@ -54,7 +54,7 @@ const createNomina = async (req, res) => {
 
     const userId = user._id;
 
-    const existingNomina = await Nomina.findOne({userId, month, year});
+    const existingNomina = await Nomina.findOne({userId, currentMonth, currentYear});
     if (existingNomina) {
         return res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
     }
