@@ -45,6 +45,12 @@ const createFiniquito = async (req, res) => {
 
 const createNomina = async (req, res) => {
     const {employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago} = req.body;
+    
+    const existingNomina = await Nomina.findOne({employeeId, month, year});
+        if (existingNomina) {
+            res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina, error: error.message});
+        }
+
     let fileName = '';
     try {
         //Check if NODE_ENV is production
@@ -63,16 +69,7 @@ const createNomina = async (req, res) => {
 
         res.status(200).json({ok: true, nomina});
     } catch (error) {
-        try {
-            const existingNomina = await Nomina.findOne({employeeId, month, year});
-            if (existingNomina) {
-                res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina, error: error.message});
-            } else {
-                res.status(500).json({ok: false, msg: 'Error creating nomina', error: error.message});
-            }
-        } catch (dbError) {
-            res.status(500).json({ok: false, msg: 'Database error', error: dbError.message});
-        }
+        res.status(500).json({ok: false, msg: 'Database error', error: error.message});        
     }
 }
 
