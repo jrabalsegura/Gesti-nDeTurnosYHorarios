@@ -52,9 +52,8 @@ const createNomina = async (req, res) => {
     const currentYear = now.getFullYear();
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
 
-    const userId = user._id;
-
-    const existingNomina = await Nomina.findOne({userId, currentMonth, currentYear});
+    const employeeId = user._id;
+    const existingNomina = await Nomina.findOne({employeeId, currentMonth, currentYear});
     if (existingNomina) {
         return res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
     }
@@ -82,7 +81,7 @@ const createNomina = async (req, res) => {
         }
         
 
-        const nomina = new Nomina({employeeId: userId, month: currentMonth, year: currentYear, baseSallary, horasExtra: user.extraHours, socialSecurity, pago, fileName, employeeName: user.name});
+        const nomina = new Nomina({employeeId, month: currentMonth, year: currentYear, baseSallary, horasExtra: user.extraHours, socialSecurity, pago, fileName, employeeName: user.name});
         await nomina.save();
 
         console.log('Nomina creada!');
