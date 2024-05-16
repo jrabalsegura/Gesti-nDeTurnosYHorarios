@@ -753,7 +753,9 @@ describe("Test suitcase", () => {
         });
     
         afterAll(async () => {
-            await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            if (employeeId) {
+                await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            }
 
             if (nominaId) {
                 await request(app).delete(`/nominas/${nominaId}`).set('x-token', token);
@@ -763,13 +765,13 @@ describe("Test suitcase", () => {
         // Test to create a nomina successfully
         it("should create a new nomina", async () => {
             const response = await request(app).post('/nominas/new').set('x-token', token).send({
-                employeeId,
-                month: currentDate.getMonth() + 1,
-                year: currentDate.getFullYear(),
-                baseSallary: 2000,
-                horasExtra: 5,
-                socialSecurity: 200,
-                pago: 2200
+                user: {
+                    _id: employeeId,
+                    name: 'test',
+                    username: 'testNominaUser',
+                    hourlySallary: 15,
+                    extraHours: 0
+                }
             });
             nominaId = response.body.nomina._id;
             expect(response.status).toBe(200);
@@ -779,9 +781,7 @@ describe("Test suitcase", () => {
         // Test to fail creating nomina due to missing required fields
         it("should fail to create a nomina without required fields", async () => {
             const response = await request(app).post('/nominas/new').set('x-token', token).send({
-                employeeId,
-                month: currentDate.getMonth() + 1,
-                year: currentDate.getFullYear()
+                employeeId
             });
             expect(response.status).toBe(400);
             expect(response.body.errors).toBeDefined();
@@ -790,13 +790,13 @@ describe("Test suitcase", () => {
         // Test to fail creating a duplicate nomina
         it("should fail to create a duplicate nomina", async () => {
             const response = await request(app).post('/nominas/new').set('x-token', token).send({
-                employeeId,
-                month: currentDate.getMonth() + 1,
-                year: currentDate.getFullYear(),
-                baseSallary: 2000,
-                horasExtra: 5,
-                socialSecurity: 200,
-                pago: 2200
+                user: {
+                    _id: employeeId,
+                    name: 'test',
+                    username: 'testNominaUser',
+                    hourlySallary: 15,
+                    extraHours: 0
+                }
             });
             expect(response.status).toBe(409);
             expect(response.body.msg).toBe('Nomina already exists');
@@ -806,8 +806,8 @@ describe("Test suitcase", () => {
         it("should get nominas successfully", async () => {
             const response = await request(app).get('/nominas').set('x-token', token).query({
                 employeeId,
-                month: currentDate.getMonth() + 1,
-                year: currentDate.getFullYear()
+                month: new Date().getMonth() + 1,
+                year: new Date().getFullYear()
             });
             expect(response.status).toBe(200);
             expect(response.body.nomina).toBeDefined();
@@ -816,8 +816,7 @@ describe("Test suitcase", () => {
         // Test to fail retrieving nominas due to missing required fields
         it("should fail to get nominas without required fields", async () => {
             const response = await request(app).get('/nominas').set('x-token', token).query({
-                employeeId,
-                month: currentDate.getMonth() + 1
+                employeeId
             });
             expect(response.status).toBe(400);
             expect(response.body.errors).toBeDefined();
@@ -825,13 +824,18 @@ describe("Test suitcase", () => {
     
         // Test to fail retrieving nominas that don't exist
         it("should fail to get nominas for non-existing employee", async () => {
+            await request(app).delete(`/employees/${employeeId}`).set('x-token', token);
+            await request(app).delete(`/nominas/${nominaId}`).set('x-token', token);
+
             const response = await request(app).get('/nominas').set('x-token', token).query({
-                employeeId: '123456789012345678901234',  // Non-existing employeeId
-                month: currentDate.getMonth() + 1,
-                year: currentDate.getFullYear()
+                employeeId,
+                month: new Date().getMonth() + 1,
+                year: new Date().getFullYear()
             });
             expect(response.status).toBe(404);
             expect(response.body.msg).toBe('Nómina no existe');
+            employeeId = null;
+            nominaId = null;
         });
     });
 
