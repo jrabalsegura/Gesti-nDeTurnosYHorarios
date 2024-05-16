@@ -47,9 +47,9 @@ const createNomina = async (req, res) => {
     const {employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago} = req.body;
     
     const existingNomina = await Nomina.findOne({employeeId, month, year});
-        if (existingNomina) {
-            res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina, error: error.message});
-        }
+    if (existingNomina) {
+        res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
+    }
 
     let fileName = '';
     try {
