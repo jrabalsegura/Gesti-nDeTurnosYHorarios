@@ -53,7 +53,11 @@ const createNomina = async (req, res) => {
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
 
     const employeeId = user._id;
+    console.log(employeeId);
+    console.log(currentMonth);
+    console.log(currentYear);
     const existingNomina = await Nomina.findOne({employeeId, currentMonth, currentYear});
+    console.log(existingNomina);
     if (existingNomina) {
         return res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
     }
