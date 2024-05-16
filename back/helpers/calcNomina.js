@@ -1,4 +1,4 @@
-export const calcNomina = (sallary, extraHours, daysInMonth) => {
+const calcNomina = (sallary, extraHours, daysInMonth) => {
 
   //sallary is the base sallary per hour, the worker works 40 hours per week
   const weekly = (sallary * 40)
@@ -22,3 +22,7 @@ export const calcNomina = (sallary, extraHours, daysInMonth) => {
       pago: parseFloat(pago.toFixed(2))
   }
 }
+
+module.exports = {
+  calcNomina
+} 
