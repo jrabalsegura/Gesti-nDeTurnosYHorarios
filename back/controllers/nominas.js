@@ -52,13 +52,12 @@ const createNomina = async (req, res) => {
     const currentYear = now.getFullYear();
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
 
-    const {baseSallary, socialSecurity, pago} = calcNomina(user.hourlySallary, user.extraHours, daysInMonth);
-
-
     const existingNomina = await Nomina.findOne({employeeId, month, year});
     if (existingNomina) {
         return res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
     }
+
+    const {baseSallary, socialSecurity, pago} = calcNomina(user.hourlySallary, user.extraHours, daysInMonth);
 
     const data = {
         employeeName: user.name,
