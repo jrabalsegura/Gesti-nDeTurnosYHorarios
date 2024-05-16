@@ -2,6 +2,7 @@ const { createPDF } = require('../helpers/createPDF');
 const { createPDFFiniquito } = require('../helpers/createPDFFiniquito');
 const Nomina = require('../models/Nomina');
 const { calcNomina } = require('../helpers/calcNomina');
+const { calcFiniquito } = require('../helpers/calcFiniquito');
 
 const getNominas = async (req, res) => {
 
@@ -22,21 +23,32 @@ const getNominas = async (req, res) => {
 }
 
 const createFiniquito = async (req, res) => {
-    const {employeeId, months, baseSallary, totalVacation, pago} = req.body;
+    const {user} = req.body;
     let fileName = '';
+
+    const finiquito = calcFiniquito(user.hourlySallary, user.startDate, user.holidays);
+
+    const data = {
+        employeeName: user.name,
+        months: finiquito.months,
+        baseSallary: finiquito.baseSallary,
+        totalVacation: finiquito.totalVacation,
+        pago: finiquito.pago
+    }
 
     try {
         //Check if NODE_ENV is production
         if (process.env.NODE_ENV !== 'test') {
-            fileName = await createPDFFiniquito(req.body);
+            fileName = await createPDFFiniquito(data);
             console.log(fileName);
         } else {
             fileName = 'test.pdf';
         }
+        finiquito.fileName = fileName;
 
         console.log('Finiquito creado!');
 
-        res.status(200).json({ok: true, fileName});
+        res.status(200).json({ok: true, finiquito});
     } catch (error) {
         
         res.status(500).json({ok: false, msg: 'Database error', error});
@@ -53,11 +65,8 @@ const createNomina = async (req, res) => {
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
 
     const employeeId = user._id;
-    console.log(employeeId);
-    console.log(currentMonth);
-    console.log(currentYear);
     const existingNomina = await Nomina.findOne({employeeId, month: currentMonth, year: currentYear});
-    console.log(existingNomina);
+    
     if (existingNomina) {
         return res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
     }
@@ -85,7 +94,7 @@ const createNomina = async (req, res) => {
         }
         
 
-        const nomina = new Nomina({employeeId, month: currentMonth, year: currentYear, baseSallary, horasExtra: user.extraHours, socialSecurity, pago, fileName, employeeName: user.name});
+        const nomina = new Nomina({employeeId, month: currentMonth, year: currentYear, baseSallary, horasExtra: user.extraHours, socialSecurity, pago, fileName});
         await nomina.save();
 
         console.log('Nomina creada!');

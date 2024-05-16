@@ -24,11 +24,7 @@ router.post('/new', [
 ], createNomina);
 
 router.post('/newFiniquito', [
-    check('employeeId', 'The employeeId is required').isMongoId(),
-    check('baseSallary', 'The sallary is required').isNumeric(),
-    check('months', 'The months are required').isNumeric(),
-    check('totalVacation', 'The total vacation payment is required').isNumeric(),
-    check('pago', 'The payment is required').isNumeric(),
+    check('user', 'The user is required').isObject(),
     validateFields,
     validateAdmin
 ], createFiniquito);
