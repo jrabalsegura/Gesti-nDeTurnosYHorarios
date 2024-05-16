@@ -1,6 +1,7 @@
 const { createPDF } = require('../helpers/createPDF');
 const { createPDFFiniquito } = require('../helpers/createPDFFiniquito');
 const Nomina = require('../models/Nomina');
+const { calcNomina } = require('../helpers/calcNomina');
 
 const getNominas = async (req, res) => {
 
@@ -44,18 +45,36 @@ const createFiniquito = async (req, res) => {
 }
 
 const createNomina = async (req, res) => {
-    const {employeeId, month, year, baseSallary, horasExtra, socialSecurity, pago} = req.body;
+    const {user} = req.body;
     
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1; // January is 0, not 1
+    const currentYear = now.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+    const {baseSallary, socialSecurity, pago} = calcNomina(user.hourlySallary, user.extraHours, daysInMonth);
+
+
     const existingNomina = await Nomina.findOne({employeeId, month, year});
     if (existingNomina) {
         return res.status(409).json({ok: false, msg: 'Nomina already exists', existingNomina});
+    }
+
+    const data = {
+        employeeName: user.name,
+        month: currentMonth,
+        year: currentYear,
+        baseSallary,
+        horasExtra: user.extraHours,
+        socialSecurity,
+        pago
     }
 
     let fileName = '';
     try {
         //Check if NODE_ENV is production
         if (process.env.NODE_ENV !== 'test') {
-            fileName = await createPDF(req.body);
+            fileName = await createPDF(data);
             console.log(fileName);
         } else {
             fileName = 'test.pdf';
