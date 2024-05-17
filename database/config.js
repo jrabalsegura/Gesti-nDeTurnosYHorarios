@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const dbConnection = async () => {
     try {
         await mongoose.connect(process.env.DB_CNN);
-        console.log('DB online');
+        console.log('DB online and actions working!');
     } catch (error) {
         console.log(error);
         throw new Error('Error initializing DB');
