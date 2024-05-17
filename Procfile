@@ -1,3 +1,3 @@
-web: node back/index.js
-worker: cd back && npm start
+web: npm start
+worker: npm start
 
