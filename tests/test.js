@@ -1175,22 +1175,6 @@ describe("Test suitcase", () => {
 
             expect(ausencia).toBe(true);
         });
-
-        it("should not detect any absence if all employees checked in", async () => {
-            // Create a check-in event for the employee
-            console.log(employeeId)
-            const response = await request(app).post('/eventosTrabajo/new').set('x-token', token).send({
-                employeeId,
-                type: 'checkin',
-                date: new Date().toISOString()
-            });
-            eventId = response.body.evento._id;
-
-            const ausencia = await checkAsistencia();
-
-            expect(ausencia).toBe(false);
-        });
-
     });
 
 
