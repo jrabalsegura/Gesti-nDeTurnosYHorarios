@@ -11,7 +11,8 @@ const { default: mongoose } = require('mongoose');
 const app = express();
 
 // CORS
-const allowedOrigins = ['https://gestion-horarios-cd0d24b996c6.herokuapp.com', 'http://gestionhorarios.eu-west-1.elasticbeanstalk.com'];
+//If NODE_ENV === development add http://localhost:3001
+const allowedOrigins = ['https://gestion-horarios-cd0d24b996c6.herokuapp.com', 'http://gestionhorarios.eu-west-1.elasticbeanstalk.com', 'http://localhost:3001'];
 
 app.use(cors({
     origin: allowedOrigins
