@@ -41,6 +41,9 @@ const createAdmin = async (req, res) => {
 const loginEmployee = async (req, res) => {
 	const {username, password} = req.body;
 
+	console.log(username);
+	console.log(password);
+
 	try {
 		let employee = await Employee.findOne({username});
 
