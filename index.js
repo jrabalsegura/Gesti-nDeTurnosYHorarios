@@ -4,10 +4,6 @@ const { dbConnection } = require('./database/config');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const { default: mongoose } = require('mongoose');
-const { populateDB } = require('./database/populateDB');
-const Employee = require('./models/Employee');
-
-
 
 const app = express();
 
@@ -48,15 +44,9 @@ let server;
 
 async function startApp () {
     await dbConnection(); // Ensure DB connection is ready
+    
     server = app.listen(process.env.PORT, async () => {
-        console.log(`Server is running on port ${process.env.PORT}`);
-        const isDBInitialized = await Employee.findOne({ username: process.env.ADMIN_EMAIL });
-        if (!isDBInitialized) {
-            console.log('Initializing DB...');
-            populateDB();
-        } else {
-            console.log('DB already initialized');
-        }
+        console.log(`Server is running on port ${process.env.PORT}`);       
     });
     return server;
 }

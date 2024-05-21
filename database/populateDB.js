@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { createUser } = require('../helpers/createUser');
 const EventoTrabajo = require('../models/EventoTrabajo');
+const Employee = require('../models/Employee');
 const RegistroTrabajo = require('../models/RegistroTrabajo');
 const Shift = require('../models/Shift');
 const Holiday = require('../models/Holiday');
@@ -8,12 +9,13 @@ const Holiday = require('../models/Holiday');
 const populateDB = async () => {
   await mongoose.connect(process.env.DB_CNN);
 
-  createUser({name: "admin", username: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD});
-  createUser({name: "John Doe", username: "johndoe", password: "password1"});
-  createUser({name: "Jane Smith", username: "janesmith", password: "password2"});
-  createUser({name: "Mike Johnson", username: "mikejohnson", password: "password3"});
+  await createUser({name: "admin", username: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD});
+  await createUser({name: "John Doe", username: "johndoe", password: "password1"});
+  await createUser({name: "Jane Smith", username: "janesmith", password: "password2"});
+  await createUser({name: "Mike Johnson", username: "mikejohnson", password: "password3"});
 
   // Create sample work events
+  const employees = await Employee.find({});
   const workEvents = [];
   for (let i = 0; i < 25; i++) {
     workEvents.push({
@@ -77,6 +79,5 @@ const populateDB = async () => {
   await mongoose.disconnect();
 };
 
-module.exports = {
-    populateDB
-}
+populateDB();
+
