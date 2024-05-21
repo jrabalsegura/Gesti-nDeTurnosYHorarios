@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const Employee = require('./models/Employee');
-const EventoTrabajo = require('./models/EventoTrabajo');
-const RegistroTrabajo = require('./models/RegistroTrabajo');
-const Shift = require('./models/Shift');
-const Holiday = require('./models/Holiday');
+const Employee = require('../models/Employee');
+const EventoTrabajo = require('../models/EventoTrabajo');
+const RegistroTrabajo = require('../models/RegistroTrabajo');
+const Shift = require('../models/Shift');
+const Holiday = require('../models/Holiday');
 
 const populateDB = async () => {
   await mongoose.connect(process.env.DB_CNN);
