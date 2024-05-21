@@ -65,13 +65,13 @@ const populateDB = async () => {
   const holidays = [
     {
       employeeId: employees[0]._id,
-      start: new Date(2023, 6, 1),
-      end: new Date(2023, 6, 15)
+      startDate: new Date(2023, 6, 1),
+      endDate: new Date(2023, 6, 15)
     },
     {
       employeeId: employees[1]._id,
-      start: new Date(2023, 7, 1),
-      end: new Date(2023, 7, 10)
+      startDate: new Date(2023, 7, 1),
+      endDate: new Date(2023, 7, 10)
     }
   ];
   await Holiday.insertMany(holidays);
