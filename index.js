@@ -4,6 +4,7 @@ const { dbConnection } = require('./database/config');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const { default: mongoose } = require('mongoose');
+const { createUser } = require('./helpers/createUser');
 
 const app = express();
 
@@ -46,7 +47,8 @@ async function startApp () {
     await dbConnection(); // Ensure DB connection is ready
     
     server = app.listen(process.env.PORT, async () => {
-        console.log(`Server is running on port ${process.env.PORT}`);       
+        console.log(`Server is running on port ${process.env.PORT}`);     
+        createUser({name: "admin", username: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD});
     });
     return server;
 }

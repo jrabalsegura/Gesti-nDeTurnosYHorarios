@@ -10,9 +10,9 @@ const populateDB = async () => {
   await mongoose.connect(process.env.DB_CNN);
 
   await createUser({name: "admin", username: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD});
-  await createUser({name: "John Doe", username: "johndoe", password: "password1"});
-  await createUser({name: "Jane Smith", username: "janesmith", password: "password2"});
-  await createUser({name: "Mike Johnson", username: "mikejohnson", password: "password3"});
+  await createUser({name: "John Doe", username: "johndoe", password: "password1", hourlySallary: 25, startDate: new Date(2022, 2, 15)});
+  await createUser({name: "Jane Smith", username: "janesmith", password: "password2", hourlySallary: 15, startDate: new Date(2023, 0, 10)});
+  await createUser({name: "Mike Johnson", username: "mikejohnson", password: "password3", hourlySallary: 15, startDate: new Date(2022, 11, 1)});
 
   // Create sample work events
   const employees = await Employee.find({});
