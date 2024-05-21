@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Employee = require('../models/Employee');
+const { createUser } = require('../controllers/userController');
 const EventoTrabajo = require('../models/EventoTrabajo');
 const RegistroTrabajo = require('../models/RegistroTrabajo');
 const Shift = require('../models/Shift');

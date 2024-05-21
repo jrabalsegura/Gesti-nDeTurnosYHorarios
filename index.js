@@ -2,7 +2,6 @@ const express = require('express');
 require('dotenv').config();
 const { dbConnection } = require('./database/config');
 const cors = require('cors');
-const { createUser } = require('./helpers/createUser');
 const fileUpload = require('express-fileupload');
 const { default: mongoose } = require('mongoose');
 const { populateDB } = require('./database/populateDB');
