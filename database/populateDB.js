@@ -38,7 +38,7 @@ const populateDB = async () => {
   }
   await RegistroTrabajo.insertMany(workRegistries);
 
-  // Create sample shifts
+  // Create sample shifts at 8:00 am and 16:00 pm
   const shifts = [
     {
       type: 'morning',
