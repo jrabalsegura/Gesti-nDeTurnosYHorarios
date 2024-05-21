@@ -17,12 +17,17 @@ const populateDB = async () => {
   // Create sample work events
   const employees = await Employee.find({});
   const workEvents = [];
-  for (let i = 0; i < 25; i++) {
-    workEvents.push({
-      type: i % 2 === 0 ? 'checkin' : 'checkout',
-      employeeId: employees[Math.floor(Math.random() * employees.length)]._id,
-      date: new Date(Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30))
-    });
+  for (let i = 0; i < 50; i++) {
+    const randomEmployeeIndex = Math.floor(Math.random() * employees.length);
+    const randomEmployee = employees[randomEmployeeIndex];
+    if (randomEmployee.name.toLowerCase() !== 'admin') {
+      workEvents.push({
+        type: i % 2 === 0 ? 'checkin' : 'checkout',
+        employeeId: randomEmployee._id,
+        name: randomEmployee.name,
+        date: new Date(Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30))
+      });
+    }
   }
   await EventoTrabajo.insertMany(workEvents);
 
@@ -41,21 +46,21 @@ const populateDB = async () => {
   const shifts = [
     {
       type: 'morning',
-      start: new Date(2023, 5, 1, 8, 0, 0),
-      end: new Date(2023, 5, 1, 16, 0, 0),
-      employeeId: employees[0]._id
-    },
-    {
-      type: 'afternoon',
-      start: new Date(2023, 5, 2, 16, 0, 0),
-      end: new Date(2023, 5, 2, 24, 0, 0),
+      start: new Date(2024, 5, 18, 8, 0, 0),
+      end: new Date(2024, 5, 24, 16, 0, 0),
       employeeId: employees[1]._id
     },
     {
-      type: 'morning',
-      start: new Date(2023, 5, 3, 8, 0, 0),
-      end: new Date(2023, 5, 3, 16, 0, 0),
+      type: 'afternoon',
+      start: new Date(2024, 5, 25, 16, 0, 0),
+      end: new Date(2024, 5, 29, 24, 0, 0),
       employeeId: employees[2]._id
+    },
+    {
+      type: 'morning',
+      start: new Date(2024, 5, 30, 8, 0, 0),
+      end: new Date(2024, 6, 3, 16, 0, 0),
+      employeeId: employees[3]._id
     }
   ];
   await Shift.insertMany(shifts);
@@ -63,14 +68,14 @@ const populateDB = async () => {
   // Create sample holidays
   const holidays = [
     {
-      employeeId: employees[0]._id,
-      startDate: new Date(2023, 6, 1),
-      endDate: new Date(2023, 6, 15)
+      employeeId: employees[1]._id,
+      startDate: new Date(2024, 5, 1),
+      endDate: new Date(2024, 5, 15)
     },
     {
-      employeeId: employees[1]._id,
-      startDate: new Date(2023, 7, 1),
-      endDate: new Date(2023, 7, 10)
+      employeeId: employees[2]._id,
+      startDate: new Date(2024, 5, 16),
+      endDate: new Date(2024, 5, 25)
     }
   ];
   await Holiday.insertMany(holidays);
