@@ -8,13 +8,10 @@ const Holiday = require('../models/Holiday');
 const populateDB = async () => {
   await mongoose.connect(process.env.DB_CNN);
 
-  // Create sample employees
-  const employees = await Employee.insertMany([
-    { name: "admin", username: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD},
-    { name: 'John Doe', username: 'johndoe', password: 'password1' },
-    { name: 'Jane Smith', username: 'janesmith', password: 'password2' },
-    { name: 'Mike Johnson', username: 'mikejohnson', password: 'password3' }
-  ]);
+  createUser({name: "admin", username: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD});
+  createUser({name: "John Doe", username: "johndoe", password: "password1"});
+  createUser({name: "Jane Smith", username: "janesmith", password: "password2"});
+  createUser({name: "Mike Johnson", username: "mikejohnson", password: "password3"});
 
   // Create sample work events
   const workEvents = [];
