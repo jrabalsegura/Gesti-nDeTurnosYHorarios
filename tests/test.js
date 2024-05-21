@@ -1,11 +1,6 @@
 const request = require('supertest');
 let { app, stopApp } = require('../index');
 
-const { checkAsistencia } = require('../cronjobs/checkAsistencia');
-const { checkHolidays } = require('../cronjobs/checkHolidays');
-const { deletePastShifts } = require('../cronjobs/deletePastShifts');
-const { clearHoursAndHolidays } = require('../cronjobs/clearHoursAndHolidays');
-
 describe("Test suitcase", () => {
     let token;
     const currentDate = new Date();

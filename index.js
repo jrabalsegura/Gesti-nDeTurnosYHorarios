@@ -5,6 +5,8 @@ const cors = require('cors');
 const { createUser } = require('./helpers/createUser');
 const fileUpload = require('express-fileupload');
 const { default: mongoose } = require('mongoose');
+const { populateDB } = require('./database/populateDB');
+const Employee = require('./models/Employee');
 
 
 
@@ -41,15 +43,21 @@ app.use('/download', require('./routes/download'));
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname+'/dist/index.html'));
-  });
+});
 
 let server;
 
-async function startApp() {
+async function startApp () {
     await dbConnection(); // Ensure DB connection is ready
-    server = app.listen(process.env.PORT, () => {
+    server = app.listen(process.env.PORT, async () => {
         console.log(`Server is running on port ${process.env.PORT}`);
-        createUser({name: "admin", username: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD}); 
+        const isDBInitialized = await Employee.findOne({ username: process.env.ADMIN_EMAIL });
+        if (!isDBInitialized) {
+            console.log('Initializing DB...');
+            populateDB();
+        } else {
+            console.log('DB already initialized');
+        }
     });
     return server;
 }

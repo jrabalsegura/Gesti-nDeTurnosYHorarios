@@ -7,8 +7,7 @@ const getALLShifts = async (req, res) => {
 
 const getShifts = async (req, res) => {
     const {id} = req.params;
-
-    
+  
     const shifts = await Shift.find({employeeId: id});
     res.status(200).json({shifts});
 }
