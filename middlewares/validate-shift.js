@@ -2,7 +2,6 @@ const Shift = require('../models/Shift');
 const EventoTrabajo = require('../models/EventoTrabajo');
 const Holiday = require('../models/Holiday');
 const { workEvents } = require('../config/config');
-const mongoose = require('mongoose');
 
 const validateShift = async (req, res, next) => {
   const { employeeId, start, end } = req.body;
@@ -43,7 +42,7 @@ const validateShift = async (req, res, next) => {
         msg: 'The employee checked out within the last 12 hours'
       });
     }
-    console.log(employeeId);
+    
     // Check if employee has holidays aproved in the same dates
     const overlappingHolidays = await Holiday.findOne({
         employeeId,
@@ -64,15 +63,11 @@ const validateShift = async (req, res, next) => {
     next();
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       ok: false,
       msg: 'Error al actualizar el turno'
     });
   }
-
-  
-
 };
 
 module.exports = {

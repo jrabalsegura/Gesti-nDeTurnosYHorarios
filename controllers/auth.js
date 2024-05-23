@@ -11,8 +11,6 @@ const createAdmin = async (req, res) => {
 		let employee = await Employee.findOne({username});
 
 		if (!employee) {
-			//employee = new Employee(req.body);
-
 			employee = await createUser(req.body);
 
 			res.status(201).json({
@@ -41,9 +39,6 @@ const createAdmin = async (req, res) => {
 const loginEmployee = async (req, res) => {
 	const {username, password} = req.body;
 
-	console.log(username);
-	console.log(password);
-
 	try {
 		let employee = await Employee.findOne({username});
 
@@ -54,7 +49,6 @@ const loginEmployee = async (req, res) => {
 			});
 
 		} else {
-
 			//Validar la contraseña
 			const validPassword = bcrypt.compareSync(password, employee.password);
 
@@ -89,7 +83,6 @@ const loginEmployee = async (req, res) => {
 const renewToken = async(req, res) => {
 
 	const {uid, name} = req;
-
 	//Generar un nuevo JWT
 	const token = await generateJWT(uid, name);
 

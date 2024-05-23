@@ -10,7 +10,6 @@ const {getAusencias, getAusencia, createAusencia, deleteAusencia} = require('../
 
 router.use(validateJWT);
 
-
 router.get('/all/:employeeId', validateAdmin, getAusencias);
 
 router.get('/:id', validateAdmin, getAusencia);
@@ -27,6 +26,4 @@ router.post(
     ], 
     createAusencia);
 
-
 module.exports = router;
-

@@ -3,8 +3,6 @@ const {workEvents} = require('../config/config');
 const {sendMail} = require('../helpers/sendMail');
 
 const checkAsistencia = async () => {
-    console.log('Checking asistencia');
-
     let ausencia = false;
 
     try {
@@ -36,8 +34,6 @@ const checkAsistencia = async () => {
                 if (process.env.NODE_ENV !== 'test') {
                     sendMail('Falta de asistencia', `El empleado ${employeeId} no ha realizado el checkin después de la primera hora del turno`);
                 }
-                
-                console.log(`The employee ${employeeId} has not checked in after the first hour of the shift`);
             }
         });
     } catch (error) {

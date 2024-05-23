@@ -9,18 +9,15 @@ const getEvents = async (req, res) => {
 
     // Convert eventos to a JSON string
     const eventosString = JSON.stringify(eventos);
-
     let fileName = '';
 
     // Upload to S3
     try {
         //Probando en local no funciona por falta de aws env variables
         fileName = await uploadFileToS3('events.txt', eventosString);
-        console.log('File URL:', fileName);
     } catch (err) {
         console.error(err);
     }
-
     res.status(200).json({ eventos, fileName });
 }
 
@@ -62,7 +59,6 @@ const createEvent = async (req, res) => {
                 return res.status(400).json({ "ok": false, msg: 'Invalid hours calculation' });
             }
         }
-
         res.status(201).json({ evento });
     } catch (error) {
         res.status(500).json({ "ok": false, error, msg: 'Error creating event' });
@@ -80,7 +76,6 @@ const getLastHour = async (req, res) => {
     const events = await EventoTrabajo.find({ date: { $gte: new Date(new Date().getTime() - 3600000) } });
     res.json({ events });
 }
-
 
 module.exports = {
     getEvents,

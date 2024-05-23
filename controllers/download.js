@@ -4,6 +4,7 @@ const { temporalURL } = require('../aws/config');
 const downloadFile = async (req, res) => {
   const fileName = req.body.name;
   const fileType = req.body.type;
+
   if (!fileName) {
       return res.status(400).send({ message: 'FileName is required' });
   }
@@ -22,7 +23,6 @@ const downloadFile = async (req, res) => {
       // Pipe the stream directly to the response
       response.data.pipe(res);
   } catch (error) {
-      console.error('Error downloading file:', error);
       res.status(500).send({ message: 'Failed to download file' });
   }
 }

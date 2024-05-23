@@ -1,9 +1,7 @@
 const Holiday = require('../models/Holiday');
 
 const getHolidaysStartToday = async (req, res) => {
-
-    try {
-        
+    try {       
         const today = new Date();
         const holidays = await Holiday.find({
             $expr: {
@@ -14,8 +12,7 @@ const getHolidaysStartToday = async (req, res) => {
                 ]
             }
         });
-        res.status(200).json({ ok: true, holidays });
-        
+        res.status(200).json({ ok: true, holidays });       
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error fetching holidays'});
     }
@@ -41,13 +38,11 @@ const getHolidaysEndToday = async (req, res) => {
 
 const getHolidays = async (req, res) => {
     const {id} = req.params;
-
     const holidays = await Holiday.find({employeeId: id})
     res.status(200).json({holidays});
 }
 
 const createHoliday = async (req, res) => {
-
     try {
         const {startDate, endDate, employeeId} = req.body;
         const holiday = new Holiday({startDate, endDate, employeeId});

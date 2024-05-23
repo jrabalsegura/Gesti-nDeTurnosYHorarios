@@ -11,8 +11,7 @@ const createNotification = async (req, res) => {
     try {
         const notification = new Notification({type, employeeId, startDate, endDate, name, justificante});
         await notification.save();
-        res.status(201).json({ok: true, notification});
-        
+        res.status(201).json({ok: true, notification});        
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error creating notification'});
     }

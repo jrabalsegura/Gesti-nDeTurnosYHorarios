@@ -6,7 +6,6 @@ const { validateJWT } = require('../middlewares/validate-JWT');
 const { validateAdmin } = require('../middlewares/validate-admin');
 const {isDate} = require('../helpers/isDate');
 const {isValidNotification} = require('../helpers/isValidNotification');
-
 const {getNotifications, createNotification, deleteNotification} = require('../controllers/notifications');
 
 router.use(validateJWT);
@@ -27,5 +26,3 @@ router.post(
 router.delete('/:id', validateAdmin, deleteNotification);
 
 module.exports = router;
-
-

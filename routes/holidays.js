@@ -4,7 +4,6 @@ const { check } = require('express-validator');
 const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-JWT');
 const { isDate } = require('../helpers/isDate');
-
 const {getHolidaysStartToday, getHolidaysEndToday, createHoliday, getHolidays, deleteHoliday, updateHoliday} = require('../controllers/holidays');
 const { validateAdmin } = require('../middlewares/validate-admin');
 
@@ -37,4 +36,3 @@ router.put('/:id', [
 ], updateHoliday);
 
 module.exports = router;
-

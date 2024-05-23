@@ -10,7 +10,6 @@ const { isDate } = require('../helpers/isDate');
 const { isShift } = require('../helpers/isShift');
 const { getJustStartedShifts, getALLShifts } = require('../controllers/shifts');
 
-
 router.use(validateJWT);
 
 router.get('/', getALLShifts);
@@ -50,7 +49,4 @@ router.put(
 // Delete shift
 router.delete('/:id', validateAdmin, deleteShift);
 
-
-
 module.exports = router;
-

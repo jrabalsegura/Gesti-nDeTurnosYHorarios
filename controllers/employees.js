@@ -24,7 +24,6 @@ const createEmployee = async (req, res) => {
         if (!hourlySallary && hourlySallary !== 0) {
             hourlySallary = legislacion.sallary;
         }
-        console.log(`Setting hourly salary to: ${hourlySallary}`);
         const employee = await createUser({name, username, password, startDate, hourlySallary});
 
         res.status(201).json({ok: true, employee});
@@ -58,7 +57,6 @@ const updateEmployee = async (req, res) => {
         const employee = await Employee.findByIdAndUpdate(id, {name, username, password, hourlySallary}, {new: true});
         res.status(200).json({ok: true, employee, password});
     } catch (error) {
-        console.log(error)
         res.status(500).json({ok: false, msg: 'Error updating employee', error});
     }
 }
@@ -102,7 +100,6 @@ const getSallary = async (req, res) => {
         }
         
         const sallary = employee.hourlySallary;
-        console.log(sallary);
         res.status(200).json({ok: true, sallary});
     } catch (error) {
         res.status(500).json({ok: false, msg: 'Error getting sallary'});
@@ -185,7 +182,6 @@ const changeOnHolidays = async (req, res) => {
         if (!employee) {
             return res.status(404).json({ok: false, msg: 'Employee not found'});
         }
-
         employee.onHolidays = !employee.onHolidays;
         
         await employee.save();
@@ -216,20 +212,16 @@ const clearHoursAndHolidays = async (req, res) => {
     const { id } = req.params;
 
     try {
-        console.log(`Attempting to clear hours and holidays for employee ID: ${id}`);
         const employee = await Employee.findById(id);
         if (!employee) {
-            console.error(`Employee not found with ID: ${id}`);
             return res.status(404).json({ ok: false, msg: 'Employee not found' });
         }
 
         employee.extraHours = 0;
         employee.holidays = 0;
         await employee.save();
-        console.log(`Successfully cleared hours and holidays for employee ID: ${id}`);
         return res.status(200).json({ ok: true, employee });
     } catch (error) {
-        console.error(`Error clearing hours and holidays for employee ID: ${id}`, error);
         return res.status(500).json({ ok: false, msg: 'Error clearing hours and holidays', error: error.message });
     }
 }

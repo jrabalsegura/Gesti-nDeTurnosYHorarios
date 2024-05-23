@@ -34,12 +34,9 @@ const createPDF = async (body) => {
     // Upload to S3
     try {
         await uploadFileToS3(fileName, Buffer.from(pdfOutput));
-        console.log('File uploaded to S3: ', fileName);
 
         return fileName;
     } catch (err) {
-        console.error(err);
-
         return null;
     }
 }

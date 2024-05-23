@@ -53,8 +53,6 @@ async function startApp () {
     return server;
 }
 
-
-
 function stopApp() {
     mongoose.connection.close();
     if (server) {
@@ -68,5 +66,3 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 module.exports = { app, startApp, stopApp };
-
-

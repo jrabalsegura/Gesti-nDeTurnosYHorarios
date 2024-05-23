@@ -12,16 +12,13 @@ const getShifts = async (req, res) => {
     res.status(200).json({shifts});
 }
 
-const getJustStartedShifts = async (req, res) => {
-    
+const getJustStartedShifts = async (req, res) => {   
     const oneHourAgo = new Date(new Date().getTime() - 60 * 60 * 1000);
     const now = new Date();
 
     const shifts = await Shift.find({
         start: { $gte: oneHourAgo, $lt: now }
     });
-
-
     res.status(200).json({ shifts });
 }
 
@@ -64,7 +61,6 @@ const updateShift = async (req, res) => {
             "ok": true,
             shift
         });
-
     } catch (error) {
         res.status(500).json({
             "ok": false,
@@ -95,8 +91,7 @@ const deleteShift = async (req, res) => {
             "ok": false,
             "msg": "Error al eliminar el turno"
         });
-    }
-    
+    }    
 }
 
 module.exports = {

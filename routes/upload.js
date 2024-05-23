@@ -8,5 +8,3 @@ router.use(validateJWT);
 router.post('/', uploadFile);
 
 module.exports = router;
-
-

@@ -7,7 +7,6 @@ const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
 const { isNotAdmin } = require('../helpers/isNotAdmin');
 
-
 const {
     getEmployees,
     createEmployee,
@@ -90,5 +89,3 @@ router.get('/:id/startDate', getStartDate);
 router.post('/:id/clear', clearHoursAndHolidays);
 
 module.exports = router;
-
-

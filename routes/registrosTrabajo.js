@@ -24,5 +24,3 @@ router.post('/new',
 router.delete('/:id', validateAdmin, deleteRegistry);
 
 module.exports = router;
-
-

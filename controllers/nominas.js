@@ -46,24 +46,18 @@ const createFiniquito = async (req, res) => {
         }
         finiquito.fileName = fileName;
 
-        console.log('Finiquito creado!');
-
         res.status(200).json({ok: true, finiquito});
-    } catch (error) {
-        
-        res.status(500).json({ok: false, msg: 'Database error', error});
-        
+    } catch (error) {       
+        res.status(500).json({ok: false, msg: 'Database error', error});        
     }
 }
 
 const createNomina = async (req, res) => {
-    const {user} = req.body;
-    
+    const {user} = req.body;   
     const now = new Date();
     const currentMonth = now.getMonth() + 1; // January is 0, not 1
     const currentYear = now.getFullYear();
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-
     const employeeId = user._id;
     const existingNomina = await Nomina.findOne({employeeId, month: currentMonth, year: currentYear});
     
@@ -93,11 +87,8 @@ const createNomina = async (req, res) => {
             fileName = 'test.pdf';
         }
         
-
         const nomina = new Nomina({employeeId, month: currentMonth, year: currentYear, baseSallary, horasExtra: user.extraHours, socialSecurity, pago, fileName});
         await nomina.save();
-
-        console.log('Nomina creada!');
 
         return res.status(200).json({ok: true, nomina});
     } catch (error) {

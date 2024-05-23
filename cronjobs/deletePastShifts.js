@@ -11,7 +11,6 @@ const deletePastShifts = async () => {
         if (endDate < today) {
             try {
                 await api.delete(`/shifts/${shift._id}`);
-                console.log(`Deleted shift ${shift._id} that ended on ${endDate}`);
             } catch (error) {
                 console.error(`Error deleting shift ${shift._id}:`, error);
             }

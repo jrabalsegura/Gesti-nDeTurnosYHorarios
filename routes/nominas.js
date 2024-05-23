@@ -5,7 +5,6 @@ const { validateFields } = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-JWT');
 const { validateAdmin } = require('../middlewares/validate-admin');
 const { isDate } = require('../helpers/isDate');
-
 const {getNominas, createNomina, deleteNomina, createFiniquito} = require('../controllers/nominas');
 
 router.use(validateJWT);
@@ -38,4 +37,3 @@ router.delete('/:id', [
 ], deleteNomina);
 
 module.exports = router;
-

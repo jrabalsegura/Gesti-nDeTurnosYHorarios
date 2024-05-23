@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const { createUser } = require('../helpers/createUser');
-const EventoTrabajo = require('../models/EventoTrabajo');
-const Employee = require('../models/Employee');
 const RegistroTrabajo = require('../models/RegistroTrabajo');
 const Shift = require('../models/Shift');
 const Holiday = require('../models/Holiday');
@@ -14,6 +12,7 @@ const populateDB = async () => {
   await createUser({name: "Jane Smith", username: "janesmith", password: "password2", hourlySallary: 15, startDate: new Date(2023, 0, 10)});
   await createUser({name: "Mike Johnson", username: "mikejohnson", password: "password3", hourlySallary: 15, startDate: new Date(2022, 11, 1)});
 
+  /*
   // Create sample work events
   const employees = await Employee.find({});
   const workEvents = [];
@@ -30,6 +29,7 @@ const populateDB = async () => {
     }
   }
   await EventoTrabajo.insertMany(workEvents);
+  */
 
   // Create sample work registries
   const workRegistries = [];

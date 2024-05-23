@@ -50,7 +50,6 @@ describe("Test suitcase", () => {
                 employeeId: employeeId,
                 motivo: 'Test absence'
             });
-            console.log(ausenciaResponse);
             ausenciaId = ausenciaResponse.body.ausencia._id;
             notificationId = ausenciaResponse.body.notification._id;
         });
@@ -532,7 +531,6 @@ describe("Test suitcase", () => {
         it("should allow get all the events", async () => {
             const response = await request(app).get(`/eventosTrabajo/`).set('x-token', token);
             expect(response.status).toBe(200);
-            console.log(response.body)
             expect(response.body.eventos.length).toBeGreaterThanOrEqual(1);
         });
 

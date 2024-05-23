@@ -1,9 +1,7 @@
 const Ausencia = require('../models/Ausencia');
 const Notification = require('../models/Notification');
-const Employee = require('../models/Employee');
 
 const getAusencias = async (req, res) => {
-
     try {
         //Get all ausencias by employeeId
         const ausencias = await Ausencia.find({employeeId: req.params.employeeId});

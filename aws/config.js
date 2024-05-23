@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 
-
 // Configure AWS to use your credentials
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -19,10 +18,8 @@ const uploadFileToS3 = async (fileName, content) => {
 
     try {
         const stored = await s3.upload(params).promise();
-        console.log('File uploaded successfully at', stored.Location);
         return stored.Key;
     } catch (err) {
-        console.error('Error uploading file:', err);
         throw err;
     }
 };
@@ -30,7 +27,7 @@ const uploadFileToS3 = async (fileName, content) => {
 const uploadSelectedFile = async (fileName, fileContent, mimeType) => {
 
   const params = {
-      Bucket: process.env.S3_BUCKET_NAME, // Your S3 Bucket name
+      Bucket: process.env.S3_BUCKET_NAME,
       Key: `${Date.now()}_${fileName}`, // File name you want to save as in S3
       Body: fileContent,
       ContentType: mimeType
@@ -40,7 +37,6 @@ const uploadSelectedFile = async (fileName, fileContent, mimeType) => {
     const stored = await s3.upload(params).promise();
     return stored.Key;
   } catch(err) {
-    console.error('Error uploading file:', err);
     throw err;
   }
   

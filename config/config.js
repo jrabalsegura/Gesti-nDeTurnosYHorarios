@@ -1,5 +1,4 @@
 
-
 const shifts = {
     morning: {
         start: '08:00',
