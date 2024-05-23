@@ -54,9 +54,6 @@ describe("Test suitcase", () => {
             notificationId = ausenciaResponse.body.notification._id;
         });
 
-
-
-
         afterAll(async () => {
             //Remove ausencia creada
             await request(app).delete(`/ausencias/${ausenciaId}`).set('x-token', token);

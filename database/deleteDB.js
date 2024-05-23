@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const EventoTrabajo = require("../models/EventoTrabajo");
 const Holiday = require("../models/Holiday");

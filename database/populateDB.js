@@ -1,8 +1,10 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const { createUser } = require('../helpers/createUser');
 const RegistroTrabajo = require('../models/RegistroTrabajo');
 const Shift = require('../models/Shift');
 const Holiday = require('../models/Holiday');
+const Employee = require('../models/Employee');
 
 const populateDB = async () => {
   await mongoose.connect(process.env.DB_CNN);
@@ -12,9 +14,10 @@ const populateDB = async () => {
   await createUser({name: "Jane Smith", username: "janesmith", password: "password2", hourlySallary: 15, startDate: new Date(2023, 0, 10)});
   await createUser({name: "Mike Johnson", username: "mikejohnson", password: "password3", hourlySallary: 15, startDate: new Date(2022, 11, 1)});
 
+  const employees = await Employee.find({});
   /*
   // Create sample work events
-  const employees = await Employee.find({});
+  
   const workEvents = [];
   for (let i = 0; i < 50; i++) {
     const randomEmployeeIndex = Math.floor(Math.random() * employees.length);
