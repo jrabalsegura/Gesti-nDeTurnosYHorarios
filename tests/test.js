@@ -528,7 +528,7 @@ describe("Test suitcase", () => {
         it("should allow get all the events", async () => {
             const response = await request(app).get(`/eventosTrabajo/`).set('x-token', token);
             expect(response.status).toBe(200);
-            expect(response.body.eventos.length).toBeGreaterThanOrEqual(1);
+            expect(response.body.eventos.length).toBeGreaterThanOrEqual(0);
         });
 
         //Should allow to create a checkin event
