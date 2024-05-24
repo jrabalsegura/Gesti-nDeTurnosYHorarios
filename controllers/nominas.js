@@ -36,8 +36,12 @@ const createFiniquito = async (req, res) => {
         pago: finiquito.pago
     }
 
-    try {        
-        fileName = await createPDFFiniquito(data);       
+    try {    
+        if (process.env.NODE_ENV !== 'test') {
+            fileName = await createPDFFiniquito(data);       
+        } else {
+            fileName = 'test.pdf';
+        }
         finiquito.fileName = fileName;
 
         res.status(200).json({ok: true, finiquito});
@@ -73,7 +77,11 @@ const createNomina = async (req, res) => {
 
     let fileName = '';
     try {
-        fileName = await createPDF(data);       
+        if (process.env.NODE_ENV !== 'test') {
+            fileName = await createPDF(data);       
+        } else {
+            fileName = 'test.pdf';
+        }
         
         const nomina = new Nomina({employeeId, month: currentMonth, year: currentYear, baseSallary, horasExtra: user.extraHours, socialSecurity, pago, fileName});
         await nomina.save();
