@@ -46,7 +46,7 @@ ADMIN_PASSWORD=12345678
 
 Backend:
 PORT=4014
-DB_CNN=mongodb+srv://gestion_user:VOSMx5l4MyC2Wkmz@gestionturnosdb.ps0xuo5.mongodb.net/gestion_turnos
+DB_CNN=
 JWT_SECRET=ESTEESMIPROYECTOFINDEGRADO123987_45
 API_ENDPOINT=http://localhost:4014
 API_ENDPOINTHEROKU=https://gestion-horarios-cd0d24b996c6.herokuapp.com
